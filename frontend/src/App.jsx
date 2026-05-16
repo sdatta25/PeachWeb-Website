@@ -12,7 +12,7 @@ import ChatWidget from './components/ChatWidget'
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden w-full">
       <Navbar onRequest={() => setShowModal(true)} />
       <Hero onRequest={() => setShowModal(true)} />
       <WhySection />

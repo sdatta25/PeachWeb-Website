@@ -3,20 +3,20 @@ import HeroCanvas from './HeroCanvas'
 export default function Hero({ onRequest }) {
   return (
     <section
-      className="min-h-screen pt-16 flex items-center relative overflow-hidden"
+      className="min-h-screen w-full pt-16 flex items-center relative overflow-hidden"
       style={{ background: 'linear-gradient(150deg, #FFF8F4 0%, #ffffff 55%, #FFF5F0 100%)' }}
     >
-      {/* Soft background blobs */}
+      {/* Soft background blobs — kept fully inside viewport */}
       <div
-        className="absolute top-20 left-[-100px] w-96 h-96 rounded-full opacity-30 blur-3xl pointer-events-none"
+        className="absolute top-20 left-0 w-80 h-80 rounded-full opacity-25 blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, #FFCAB0, transparent)' }}
       />
       <div
-        className="absolute bottom-20 right-[-80px] w-80 h-80 rounded-full opacity-20 blur-3xl pointer-events-none"
+        className="absolute bottom-20 right-0 w-72 h-72 rounded-full opacity-15 blur-3xl pointer-events-none"
         style={{ background: 'radial-gradient(circle, #FF8C61, transparent)' }}
       />
 
-      <div className="max-w-6xl mx-auto px-6 py-24 grid md:grid-cols-2 gap-12 items-center w-full">
+      <div className="w-full max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-8 items-center">
         {/* ── Left: Text ── */}
         <div className="animate-fade-up">
           {/* Badge */}
@@ -101,8 +101,8 @@ export default function Hero({ onRequest }) {
 
         {/* ── Right: 3D Canvas ── */}
         <div
-          className="hidden md:block animate-fade-in"
-          style={{ height: '520px', position: 'relative' }}
+          className="hidden md:flex animate-fade-in"
+          style={{ height: '520px', position: 'relative', width: '100%' }}
         >
           <HeroCanvas />
 

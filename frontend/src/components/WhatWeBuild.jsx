@@ -45,7 +45,7 @@ const services = [
 
 export default function WhatWeBuild() {
   return (
-    <section id="build" className="py-28" style={{ background: 'linear-gradient(180deg, #FFF8F4 0%, #FFF2EB 100%)' }}>
+    <section id="build" className="py-28 w-full" style={{ background: 'linear-gradient(180deg, #FFF8F4 0%, #FFF2EB 100%)' }}>
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
