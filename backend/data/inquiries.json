@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1e931e11-5ccc-430a-bab7-61628faadb3f",
+    "name": "Test User",
+    "email": null,
+    "phone": null,
+    "organization": null,
+    "orgType": null,
+    "description": "Test inquiry",
+    "budget": null,
+    "services": null,
+    "status": "new",
+    "createdAt": "2026-05-16T05:28:00.055Z"
+  },
+  {
+    "id": "f1f66904-57c3-40fa-aa49-c3947e85ba1a",
+    "name": "Test User",
+    "email": "peachwebdevelopment@gmail.com",
+    "phone": null,
+    "organization": "Test Org",
+    "orgType": null,
+    "description": "Testing email configuration",
+    "budget": null,
+    "services": null,
+    "status": "new",
+    "createdAt": "2026-05-16T05:47:48.725Z"
+  },
+  {
+    "id": "cfd518cc-b933-4bd2-a2b0-f8fe5d5008ec",
+    "name": "Souren Datta",
+    "email": "sourendatta2512@gmail.com",
+    "phone": "7623908020",
+    "organization": "AHS ",
+    "orgType": "School",
+    "description": "Website ",
+    "budget": "Under $500",
+    "services": [
+      "Website"
+    ],
+    "status": "new",
+    "createdAt": "2026-05-16T06:02:03.012Z"
+  }
+]

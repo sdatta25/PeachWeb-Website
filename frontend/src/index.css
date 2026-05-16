@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: #ffffff; -webkit-font-smoothing: antialiased; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%            { transform: translateY(-6px); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes chat-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,140,97,0.4); }
+  50%       { box-shadow: 0 0 0 12px rgba(255,140,97,0); }
+}
+
+.animate-fade-up  { animation: fadeUp  0.7s ease forwards; }
+.animate-fade-in  { animation: fadeIn  0.9s ease forwards 0.2s; opacity: 0; }
+.animate-float    { animation: float   4s  ease-in-out infinite; }
+.follow-up-enter  { animation: fadeSlideUp 0.25s ease forwards; }
+
+.chat-messages::-webkit-scrollbar       { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: #FF8C61; border-radius: 4px; }
+
+::selection { background: #FFE4D6; color: #1C1C1C; }
