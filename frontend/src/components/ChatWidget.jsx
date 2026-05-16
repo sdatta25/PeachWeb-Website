@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { PeachIcon } from './PeachLogo'
 
-const API_URL = 'http://localhost:3002'
+const API_URL = 'https://peachweb-backend.onrender.com'
 
 function makeGreeting() {
   return {
