@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PeachWeb — Responsive Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #111;
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    header {
+      background: #1a1a1a;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #FF8C61;
+    }
+    header p { font-size: 13px; color: #6B7280; }
+
+    /* Tab buttons */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: #222;
+      padding: 4px;
+      border-radius: 10px;
+    }
+    .tab {
+      padding: 8px 16px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      color: #9CA3AF;
+      background: transparent;
+    }
+    .tab.active {
+      background: #FF8C61;
+      color: white;
+    }
+    .tab:hover:not(.active) { color: white; }
+
+    /* ── All-devices view ── */
+    #view-all {
+      padding: 40px 24px;
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .device-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .device-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6B7280;
+    }
+
+    /* Phone frame */
+    .phone-frame {
+      background: #1a1a1a;
+      border-radius: 44px;
+      padding: 14px 10px;
+      box-shadow:
+        0 0 0 2px #333,
+        0 0 0 4px #222,
+        0 32px 64px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+    }
+    .phone-screen {
+      width: 375px;
+      height: 680px;
+      border-radius: 32px;
+      overflow: hidden;
+      background: white;
+    }
+    .phone-screen iframe {
+      width: 375px;
+      height: 812px;
+      border: none;
+      transform-origin: top left;
+      transform: scale(0.837);
+    }
+
+    /* Tablet frame */
+    .tablet-frame {
+      background: #1a1a1a;
+      border-radius: 24px;
+      padding: 20px 14px;
+      box-shadow:
+        0 0 0 2px #333,
+        0 0 0 4px #222,
+        0 32px 64px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .tablet-frame::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: #444;
+      border-radius: 50%;
+    }
+    .tablet-screen {
+      width: 768px;
+      height: 560px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+    }
+    .tablet-screen iframe {
+      width: 768px;
+      height: 1024px;
+      border: none;
+      transform-origin: top left;
+      transform: scale(0.547);
+    }
+
+    /* Desktop frame */
+    .desktop-frame {
+      background: #222;
+      border-radius: 12px 12px 0 0;
+      padding: 28px 8px 0;
+      box-shadow:
+        0 0 0 1px #333,
+        0 32px 64px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .desktop-frame::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+    }
+    .desktop-dots {
+      position: absolute;
+      top: 10px;
+      left: 14px;
+      display: flex;
+      gap: 5px;
+    }
+    .desktop-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: block;
+    }
+    .desktop-screen {
+      width: 900px;
+      height: 520px;
+      overflow: hidden;
+      background: white;
+    }
+    .desktop-screen iframe {
+      width: 1280px;
+      height: 800px;
+      border: none;
+      transform-origin: top left;
+      transform: scale(0.703);
+    }
+    .desktop-stand {
+      width: 140px;
+      height: 14px;
+      background: #333;
+      margin: 0 auto;
+      border-radius: 0 0 4px 4px;
+    }
+    .desktop-base {
+      width: 260px;
+      height: 8px;
+      background: #2a2a2a;
+      margin: 0 auto;
+      border-radius: 4px;
+    }
+
+    /* ── Single device views ── */
+    #view-mobile, #view-tablet, #view-desktop {
+      display: none;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 24px;
+    }
+
+    /* size badge */
+    .size-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #9CA3AF;
+      font-family: monospace;
+    }
+    .size-badge span { color: #FF8C61; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🍑 PeachWeb</h1>
+    <p>Responsive Preview — localhost:5174</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showView('all', this)">All Devices</button>
+    <button class="tab" onclick="showView('mobile', this)">📱 Mobile</button>
+    <button class="tab" onclick="showView('tablet', this)">📟 Tablet</button>
+    <button class="tab" onclick="showView('desktop', this)">🖥️ Desktop</button>
+  </div>
+</header>
+
+<!-- ALL DEVICES -->
+<div id="view-all">
+
+  <!-- Phone -->
+  <div class="device-wrap">
+    <p class="device-label">📱 iPhone — 375px</p>
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <iframe src="http://localhost:5174" title="Mobile view"></iframe>
+      </div>
+    </div>
+    <p class="size-badge"><span>375</span> × 812 px</p>
+  </div>
+
+  <!-- Tablet -->
+  <div class="device-wrap">
+    <p class="device-label">📟 iPad — 768px</p>
+    <div class="tablet-frame">
+      <div class="tablet-screen">
+        <iframe src="http://localhost:5174" title="Tablet view"></iframe>
+      </div>
+    </div>
+    <p class="size-badge"><span>768</span> × 1024 px</p>
+  </div>
+
+</div>
+
+<!-- Desktop full row below -->
+<div style="display:flex;justify-content:center;padding:0 24px 48px;flex-direction:column;align-items:center;gap:16px" id="desktop-row">
+  <p class="device-label" style="color:#6B7280;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">🖥️ Desktop — 1280px</p>
+  <div class="desktop-frame">
+    <div class="desktop-dots">
+      <span style="background:#ff5f57"></span>
+      <span style="background:#febc2e"></span>
+      <span style="background:#28c840"></span>
+    </div>
+    <div class="desktop-screen">
+      <iframe src="http://localhost:5174" title="Desktop view"></iframe>
+    </div>
+  </div>
+  <div class="desktop-stand"></div>
+  <div class="desktop-base"></div>
+  <p class="size-badge"><span>1280</span> × 800 px</p>
+</div>
+
+<!-- MOBILE ONLY -->
+<div id="view-mobile" style="flex-direction:column;align-items:center;gap:16px;">
+  <p class="device-label">📱 iPhone — 375 × 812 px</p>
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <iframe src="http://localhost:5174" title="Mobile"></iframe>
+    </div>
+  </div>
+  <p class="size-badge"><span>375</span> × 812 px</p>
+</div>
+
+<!-- TABLET ONLY -->
+<div id="view-tablet" style="flex-direction:column;align-items:center;gap:16px;">
+  <p class="device-label">📟 iPad — 768 × 1024 px</p>
+  <div class="tablet-frame">
+    <div class="tablet-screen">
+      <iframe src="http://localhost:5174" title="Tablet"></iframe>
+    </div>
+  </div>
+  <p class="size-badge"><span>768</span> × 1024 px</p>
+</div>
+
+<!-- DESKTOP ONLY -->
+<div id="view-desktop" style="flex-direction:column;align-items:center;gap:16px;">
+  <p class="device-label">🖥️ Desktop — 1280 × 800 px</p>
+  <div class="desktop-frame">
+    <div class="desktop-dots">
+      <span style="background:#ff5f57"></span>
+      <span style="background:#febc2e"></span>
+      <span style="background:#28c840"></span>
+    </div>
+    <div class="desktop-screen">
+      <iframe src="http://localhost:5174" title="Desktop"></iframe>
+    </div>
+  </div>
+  <div class="desktop-stand"></div>
+  <div class="desktop-base"></div>
+  <p class="size-badge"><span>1280</span> × 800 px</p>
+</div>
+
+<script>
+  function showView(view, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
+    btn.classList.add('active')
+
+    const allEl      = document.getElementById('view-all')
+    const desktopRow = document.getElementById('desktop-row')
+    const mobileEl   = document.getElementById('view-mobile')
+    const tabletEl   = document.getElementById('view-tablet')
+    const desktopEl  = document.getElementById('view-desktop')
+
+    allEl.style.display      = 'none'
+    desktopRow.style.display = 'none'
+    mobileEl.style.display   = 'none'
+    tabletEl.style.display   = 'none'
+    desktopEl.style.display  = 'none'
+
+    if (view === 'all') {
+      allEl.style.display      = 'flex'
+      desktopRow.style.display = 'flex'
+    } else if (view === 'mobile') {
+      mobileEl.style.display = 'flex'
+    } else if (view === 'tablet') {
+      tabletEl.style.display = 'flex'
+    } else if (view === 'desktop') {
+      desktopEl.style.display = 'flex'
+    }
+  }
+</script>
+</body>
+</html>

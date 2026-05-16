@@ -35,7 +35,7 @@ export default function Footer() {
           {/* Email */}
           <a
             href="mailto:peachwebdevelopment@gmail.com"
-            className="text-sm font-medium transition-opacity hover:opacity-80"
+            className="text-sm font-medium transition-opacity hover:opacity-80 break-all text-center md:text-right"
             style={{ color: '#FF8C61' }}
           >
             📧 peachwebdevelopment@gmail.com

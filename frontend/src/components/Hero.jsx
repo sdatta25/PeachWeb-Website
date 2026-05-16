@@ -28,12 +28,13 @@ export default function Hero({ onRequest }) {
               className="w-1.5 h-1.5 rounded-full flex-shrink-0"
               style={{ backgroundColor: '#FF8C61', boxShadow: '0 0 6px #FF8C61' }}
             />
-            Websites & AI Chatbots for Local Business
+            <span className="hidden sm:inline">Websites & AI Chatbots for Local Business</span>
+            <span className="sm:hidden">Websites & AI Chatbots</span>
           </div>
 
           {/* Headline */}
           <h1
-            className="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6 tracking-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1] mb-6 tracking-tight"
             style={{ color: '#1C1C1C' }}
           >
             We Build Websites.{' '}

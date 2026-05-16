@@ -172,8 +172,8 @@ export default function ChatWidget() {
       {/* Chat Window */}
       {open && (
         <div
-          className="fixed bottom-24 right-5 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden"
-          style={{ width: '380px', height: '520px', backgroundColor: 'white' }}
+          className="fixed bottom-24 right-2.5 md:right-5 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden"
+          style={{ width: 'min(380px, calc(100vw - 20px))', height: 'min(520px, calc(100dvh - 120px))', backgroundColor: 'white' }}
         >
           {/* Header */}
           <div
@@ -355,7 +355,7 @@ export default function ChatWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-5 right-2.5 md:right-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95"
         style={{
           backgroundColor: open ? '#FF8C61' : '#ffffff',
           border: open ? 'none' : '2px solid #FFE4D6',

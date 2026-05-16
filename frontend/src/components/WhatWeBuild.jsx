@@ -92,9 +92,9 @@ export default function WhatWeBuild() {
                 <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>{s.description}</p>
               </div>
 
-              {/* Arrow on hover */}
+              {/* Arrow on hover — desktop only */}
               <div
-                className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-lg"
+                className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-lg"
                 style={{ color: '#FF8C61' }}
               >
                 →
