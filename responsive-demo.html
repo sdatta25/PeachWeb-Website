@@ -8,7 +8,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #111; font-family: system-ui, sans-serif; min-height: 100vh; }
 
-    /* Header */
+    /* ── Header ── */
     header {
       background: #1a1a1a;
       border-bottom: 1px solid #2a2a2a;
@@ -22,27 +22,46 @@
     }
     header h1 { font-size: 17px; font-weight: 700; color: #FF8C61; }
     header p  { font-size: 12px; color: #6B7280; margin-top: 2px; }
-
-    /* Tabs */
     .tabs { display: flex; gap: 6px; background: #222; padding: 4px; border-radius: 10px; }
     .tab {
-      padding: 7px 15px; border-radius: 7px; border: none; cursor: pointer;
-      font-size: 13px; font-weight: 600; transition: all 0.15s;
+      padding: 7px 14px; border-radius: 7px; border: none; cursor: pointer;
+      font-size: 13px; font-weight: 600; transition: all .15s;
       color: #9CA3AF; background: transparent;
     }
     .tab.active { background: #FF8C61; color: white; }
     .tab:hover:not(.active) { color: white; }
 
-    /* Page sections */
-    .view { display: none; padding: 36px 24px 48px; }
-    .view.active { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-    #view-all.active { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 40px; }
+    /* ── Views ── */
+    .view { display: none; padding: 36px 24px 56px; }
+    .view.active { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    #view-all.active {
+      flex-direction: row; flex-wrap: wrap;
+      justify-content: center; align-items: flex-start; gap: 48px;
+    }
 
-    .device-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    /* ── Device wrapper ── */
+    .device-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+    }
+    .device-top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; gap: 12px;
+    }
     .device-label {
       font-size: 11px; font-weight: 700; letter-spacing: .1em;
       text-transform: uppercase; color: #6B7280;
     }
+    /* Rotate button */
+    .rotate-btn {
+      display: flex; align-items: center; gap-5px;
+      padding: 5px 10px; border-radius: 6px; border: 1px solid #2a2a2a;
+      background: #1a1a1a; color: #9CA3AF; cursor: pointer;
+      font-size: 11px; font-weight: 600; transition: all .15s; gap: 5px;
+    }
+    .rotate-btn:hover { border-color: #FF8C61; color: #FF8C61; }
+    .rotate-btn svg { transition: transform .4s ease; }
+    .rotate-btn.landscape svg { transform: rotate(90deg); }
+
     .size-badge {
       font-size: 12px; color: #9CA3AF; font-family: monospace;
       background: #1a1a1a; border: 1px solid #2a2a2a;
@@ -50,124 +69,140 @@
     }
     .size-badge b { color: #FF8C61; }
 
-    /* ─── PHONE frame ───
-       Device: 375 × 812
-       Display: 260 × 520  →  scale = 260/375 = 0.6933
-       iframe height = 520 / 0.6933 ≈ 750
-    */
+    /* ── Transition wrapper for smooth rotation ── */
+    .frame-transition {
+      transition: all .4s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ══════════════════════════════════════════
+       PHONE
+       Portrait  : device 375×812 → display 260×520  scale=0.6933
+       Landscape : device 812×375 → display 500×245  scale=0.6158
+    ══════════════════════════════════════════ */
     .phone-outer {
       background: #1c1c1c;
       border-radius: 48px;
       padding: 14px 10px;
       box-shadow: 0 0 0 2px #333, 0 0 0 4px #222, 0 28px 56px rgba(0,0,0,.7);
       position: relative;
+      transition: border-radius .4s ease, padding .4s ease;
     }
-    .phone-outer::before {          /* notch */
-      content: '';
+    /* notch – portrait */
+    .phone-outer .notch {
       position: absolute;
       top: 18px; left: 50%; transform: translateX(-50%);
       width: 72px; height: 6px;
       background: #333; border-radius: 3px;
+      transition: all .4s ease;
     }
     .phone-screen {
-      width: 260px;
-      height: 520px;
+      width: 260px; height: 520px;
       border-radius: 36px;
-      overflow: hidden;
-      background: white;
+      overflow: hidden; background: white;
+      transition: width .4s ease, height .4s ease, border-radius .4s ease;
     }
     .phone-screen iframe {
-      width: 375px;
-      height: 750px;
-      border: none;
-      transform-origin: top left;
+      width: 375px; height: 750px;
+      border: none; transform-origin: top left;
       transform: scale(0.6933);
+      transition: none;
     }
 
-    /* ─── TABLET frame ───
-       Device: 768 × 1024
-       Display: 460 × 580  →  scale = 460/768 = 0.5990
-       iframe height = 580 / 0.5990 ≈ 968
-    */
+    /* PHONE LANDSCAPE */
+    .phone-outer.landscape {
+      border-radius: 16px;
+      padding: 10px 14px;
+    }
+    .phone-outer.landscape .notch {
+      top: 50%; left: 18px;
+      transform: translateY(-50%);
+      width: 6px; height: 60px;
+    }
+    .phone-outer.landscape .phone-screen {
+      width: 500px; height: 245px;
+      border-radius: 10px;
+    }
+    .phone-outer.landscape .phone-screen iframe {
+      width: 812px; height: 398px;
+      transform: scale(0.6158);
+    }
+
+    /* ══════════════════════════════════════════
+       TABLET
+       Portrait  : device 768×1024 → display 460×580  scale=0.5990
+       Landscape : device 1024×768 → display 580×435  scale=0.5664
+    ══════════════════════════════════════════ */
     .tablet-outer {
       background: #1c1c1c;
       border-radius: 26px;
       padding: 18px 12px;
       box-shadow: 0 0 0 2px #333, 0 0 0 4px #222, 0 28px 56px rgba(0,0,0,.7);
       position: relative;
+      transition: border-radius .4s ease, padding .4s ease;
     }
-    .tablet-outer::before {         /* home button dot */
-      content: '';
+    .tablet-outer .home-btn {
       position: absolute;
       top: 50%; left: 7px; transform: translateY(-50%);
       width: 4px; height: 4px; background: #444; border-radius: 50%;
+      transition: all .4s ease;
     }
     .tablet-screen {
-      width: 460px;
-      height: 580px;
+      width: 460px; height: 580px;
       border-radius: 16px;
-      overflow: hidden;
-      background: white;
+      overflow: hidden; background: white;
+      transition: width .4s ease, height .4s ease, border-radius .4s ease;
     }
     .tablet-screen iframe {
-      width: 768px;
-      height: 968px;
-      border: none;
-      transform-origin: top left;
+      width: 768px; height: 968px;
+      border: none; transform-origin: top left;
       transform: scale(0.5990);
+      transition: none;
     }
 
-    /* ─── DESKTOP frame ───
-       Device: 1280 × 800
-       Display: 860 × 520  →  scale = 860/1280 = 0.6719
-       iframe height = 520 / 0.6719 ≈ 774
-    */
-    .desktop-outer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* TABLET LANDSCAPE */
+    .tablet-outer.landscape {
+      border-radius: 18px;
+      padding: 12px 18px;
     }
+    .tablet-outer.landscape .home-btn {
+      top: 7px; left: 50%; transform: translateX(-50%);
+    }
+    .tablet-outer.landscape .tablet-screen {
+      width: 580px; height: 435px;
+      border-radius: 12px;
+    }
+    .tablet-outer.landscape .tablet-screen iframe {
+      width: 1024px; height: 768px;
+      transform: scale(0.5664);
+    }
+
+    /* ══════════════════════════════════════════
+       DESKTOP (no landscape – always horizontal)
+       Device 1280×800 → display 860×520  scale=0.6719
+    ══════════════════════════════════════════ */
+    .desktop-outer { display: flex; flex-direction: column; align-items: center; }
     .desktop-lid {
-      background: #222;
-      border-radius: 12px 12px 0 0;
+      background: #222; border-radius: 12px 12px 0 0;
       padding: 28px 8px 0;
-      box-shadow: 0 0 0 1px #333;
-      position: relative;
-    }
-    .desktop-lid::before {          /* menu bar dot row */
-      content: '';
-      position: absolute;
-      top: 10px; left: 50%; transform: translateX(-50%);
-      width: 50px; height: 5px; background: #333; border-radius: 3px;
+      box-shadow: 0 0 0 1px #333; position: relative;
     }
     .desktop-dots {
-      position: absolute; top: 9px; left: 12px;
-      display: flex; gap: 5px;
+      position: absolute; top: 9px; left: 12px; display: flex; gap: 5px;
     }
-    .desktop-dots span {
-      width: 8px; height: 8px; border-radius: 50%; display: block;
+    .desktop-dots span { width: 8px; height: 8px; border-radius: 50%; display: block; }
+    .desktop-lid::before {
+      content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 50px; height: 5px; background: #333; border-radius: 3px;
     }
     .desktop-screen {
-      width: 860px;
-      height: 520px;
-      overflow: hidden;
-      background: white;
+      width: 860px; height: 520px; overflow: hidden; background: white;
     }
     .desktop-screen iframe {
-      width: 1280px;
-      height: 774px;
-      border: none;
-      transform-origin: top left;
-      transform: scale(0.6719);
+      width: 1280px; height: 774px; border: none;
+      transform-origin: top left; transform: scale(0.6719);
     }
-    .desktop-stand {
-      width: 120px; height: 14px;
-      background: #2a2a2a; border-radius: 0 0 4px 4px;
-    }
-    .desktop-base {
-      width: 240px; height: 7px;
-      background: #222; border-radius: 4px; margin-top: 1px;
-    }
+    .desktop-stand { width: 120px; height: 14px; background: #2a2a2a; border-radius: 0 0 4px 4px; }
+    .desktop-base  { width: 240px; height: 7px;  background: #222; border-radius: 4px; margin-top: 1px; }
   </style>
 </head>
 <body>
@@ -178,38 +213,63 @@
     <p>Responsive Device Preview — localhost:5174</p>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="show('all',this)">All Devices</button>
-    <button class="tab"        onclick="show('mobile',this)">📱 Mobile</button>
-    <button class="tab"        onclick="show('tablet',this)">📟 Tablet</button>
-    <button class="tab"        onclick="show('desktop',this)">🖥️ Desktop</button>
+    <button class="tab active" onclick="showView('all',this)">All Devices</button>
+    <button class="tab"        onclick="showView('mobile',this)">📱 Mobile</button>
+    <button class="tab"        onclick="showView('tablet',this)">📟 Tablet</button>
+    <button class="tab"        onclick="showView('desktop',this)">🖥️ Desktop</button>
   </div>
 </header>
 
-<!-- ── ALL DEVICES ── -->
+<!-- rotate icon SVG (reused) -->
+<svg style="display:none">
+  <symbol id="rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 4 23 10 17 10"/>
+    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+  </symbol>
+</svg>
+
+<!-- ════════ ALL DEVICES ════════ -->
 <div id="view-all" class="view active">
 
+  <!-- Phone -->
   <div class="device-wrap">
-    <p class="device-label">📱 iPhone — 375px</p>
-    <div class="phone-outer">
+    <div class="device-top-bar">
+      <p class="device-label">📱 iPhone</p>
+      <button class="rotate-btn" id="rotate-phone-all" onclick="rotateDevice('phone-all')">
+        <svg width="12" height="12"><use href="#rotate-icon"/></svg> Rotate
+      </button>
+    </div>
+    <div class="phone-outer frame-transition" id="phone-all">
+      <div class="notch"></div>
       <div class="phone-screen">
         <iframe src="http://localhost:5174" title="Mobile"></iframe>
       </div>
     </div>
-    <p class="size-badge"><b>375</b> × 812 px</p>
+    <p class="size-badge" id="badge-phone-all"><b>375</b> × 812 px</p>
   </div>
 
+  <!-- Tablet -->
   <div class="device-wrap">
-    <p class="device-label">📟 iPad — 768px</p>
-    <div class="tablet-outer">
+    <div class="device-top-bar">
+      <p class="device-label">📟 iPad</p>
+      <button class="rotate-btn" id="rotate-tablet-all" onclick="rotateDevice('tablet-all')">
+        <svg width="12" height="12"><use href="#rotate-icon"/></svg> Rotate
+      </button>
+    </div>
+    <div class="tablet-outer frame-transition" id="tablet-all">
+      <div class="home-btn"></div>
       <div class="tablet-screen">
         <iframe src="http://localhost:5174" title="Tablet"></iframe>
       </div>
     </div>
-    <p class="size-badge"><b>768</b> × 1024 px</p>
+    <p class="size-badge" id="badge-tablet-all"><b>768</b> × 1024 px</p>
   </div>
 
+  <!-- Desktop -->
   <div class="device-wrap">
-    <p class="device-label">🖥️ Desktop — 1280px</p>
+    <div class="device-top-bar" style="justify-content:center;">
+      <p class="device-label">🖥️ Desktop</p>
+    </div>
     <div class="desktop-outer">
       <div class="desktop-lid">
         <div class="desktop-dots">
@@ -229,29 +289,41 @@
 
 </div>
 
-<!-- ── MOBILE ── -->
+<!-- ════════ MOBILE ════════ -->
 <div id="view-mobile" class="view">
-  <p class="device-label">📱 iPhone — 375 × 812 px</p>
-  <div class="phone-outer">
+  <div class="device-top-bar" style="width:auto;gap:16px;">
+    <p class="device-label">📱 iPhone</p>
+    <button class="rotate-btn" id="rotate-phone-solo" onclick="rotateDevice('phone-solo')">
+      <svg width="12" height="12"><use href="#rotate-icon"/></svg> Rotate
+    </button>
+  </div>
+  <div class="phone-outer frame-transition" id="phone-solo">
+    <div class="notch"></div>
     <div class="phone-screen">
-      <iframe src="http://localhost:5174" title="Mobile"></iframe>
+      <iframe src="http://localhost:5174" title="Mobile Solo"></iframe>
     </div>
   </div>
-  <p class="size-badge"><b>375</b> × 812 px</p>
+  <p class="size-badge" id="badge-phone-solo"><b>375</b> × 812 px</p>
 </div>
 
-<!-- ── TABLET ── -->
+<!-- ════════ TABLET ════════ -->
 <div id="view-tablet" class="view">
-  <p class="device-label">📟 iPad — 768 × 1024 px</p>
-  <div class="tablet-outer">
+  <div class="device-top-bar" style="width:auto;gap:16px;">
+    <p class="device-label">📟 iPad</p>
+    <button class="rotate-btn" id="rotate-tablet-solo" onclick="rotateDevice('tablet-solo')">
+      <svg width="12" height="12"><use href="#rotate-icon"/></svg> Rotate
+    </button>
+  </div>
+  <div class="tablet-outer frame-transition" id="tablet-solo">
+    <div class="home-btn"></div>
     <div class="tablet-screen">
-      <iframe src="http://localhost:5174" title="Tablet"></iframe>
+      <iframe src="http://localhost:5174" title="Tablet Solo"></iframe>
     </div>
   </div>
-  <p class="size-badge"><b>768</b> × 1024 px</p>
+  <p class="size-badge" id="badge-tablet-solo"><b>768</b> × 1024 px</p>
 </div>
 
-<!-- ── DESKTOP ── -->
+<!-- ════════ DESKTOP ════════ -->
 <div id="view-desktop" class="view">
   <p class="device-label">🖥️ Desktop — 1280 × 800 px</p>
   <div class="desktop-outer">
@@ -262,7 +334,7 @@
         <span style="background:#28c840"></span>
       </div>
       <div class="desktop-screen">
-        <iframe src="http://localhost:5174" title="Desktop"></iframe>
+        <iframe src="http://localhost:5174" title="Desktop Solo"></iframe>
       </div>
     </div>
     <div class="desktop-stand"></div>
@@ -272,7 +344,42 @@
 </div>
 
 <script>
-  function show(view, btn) {
+  /* Track orientation state per device instance */
+  const state = {
+    'phone-all':   'portrait',
+    'phone-solo':  'portrait',
+    'tablet-all':  'portrait',
+    'tablet-solo': 'portrait',
+  }
+
+  const badges = {
+    'phone-all':   { portrait: '<b>375</b> × 812 px',   landscape: '<b>812</b> × 375 px'   },
+    'phone-solo':  { portrait: '<b>375</b> × 812 px',   landscape: '<b>812</b> × 375 px'   },
+    'tablet-all':  { portrait: '<b>768</b> × 1024 px',  landscape: '<b>1024</b> × 768 px'  },
+    'tablet-solo': { portrait: '<b>768</b> × 1024 px',  landscape: '<b>1024</b> × 768 px'  },
+  }
+
+  function rotateDevice(id) {
+    const frame  = document.getElementById(id)
+    const btnId  = 'rotate-' + id.replace('-', '-')  // same id pattern
+    const btn    = document.getElementById('rotate-' + id)
+    const badge  = document.getElementById('badge-' + id)
+    const isLandscape = state[id] === 'landscape'
+
+    if (isLandscape) {
+      frame.classList.remove('landscape')
+      btn.classList.remove('landscape')
+      state[id] = 'portrait'
+    } else {
+      frame.classList.add('landscape')
+      btn.classList.add('landscape')
+      state[id] = 'landscape'
+    }
+
+    if (badge) badge.innerHTML = badges[id][state[id]]
+  }
+
+  function showView(view, btn) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
     btn.classList.add('active')
