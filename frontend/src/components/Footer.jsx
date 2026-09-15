@@ -30,6 +30,16 @@ export default function Footer() {
                 {link.label}
               </a>
             ))}
+            <a
+              href="https://www.linkedin.com/in/sourendatta"
+              target="_blank"
+              rel="me noopener"
+              title="Souren Datta on LinkedIn"
+              className="text-sm transition-colors hover:text-white"
+              style={{ color: '#9CA3AF' }}
+            >
+              LinkedIn
+            </a>
           </div>
 
           {/* Email */}
@@ -47,7 +57,17 @@ export default function Footer() {
 
         {/* Bottom Row */}
         <p className="text-center text-sm" style={{ color: '#6B7280' }}>
-          © 2024 PeachWeb. Websites & AI Chatbots for Local Businesses.
+          © 2024 PeachWeb. Websites & AI Chatbots for Local Businesses. Built by{' '}
+          <a
+            href="https://www.linkedin.com/in/sourendatta"
+            target="_blank"
+            rel="me noopener"
+            className="underline transition-colors hover:text-white"
+            style={{ color: '#9CA3AF' }}
+          >
+            Souren Datta
+          </a>
+          .
         </p>
       </div>
     </footer>
