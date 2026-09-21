@@ -52,8 +52,28 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-// --- Groq client ---
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+// --- Groq client (lazy: a missing key must not take down the whole server) ---
+let groq = null
+function getGroq() {
+  if (!process.env.GROQ_API_KEY) return null
+  if (!groq) groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+  return groq
+}
+
+const CHAT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
+
+// --- Verify SMTP credentials at boot (logs only, never sends mail) ---
+let emailReady = false
+transporter.verify()
+  .then(() => { emailReady = true; console.log('SMTP ready — inquiry emails will send.') })
+  .catch(err => console.error('SMTP NOT ready — inquiry emails will fail:', err.message))
+
+// Escape user input before it goes into an HTML email body
+function esc(v) {
+  return String(v ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+}
 
 // POST /api/inquiries — submit contact form
 app.post('/api/inquiries', async (req, res) => {
@@ -91,29 +111,37 @@ app.post('/api/inquiries', async (req, res) => {
         </div>
         <div style="padding:32px 40px;">
           <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;width:140px;">Name</td><td style="padding:10px 0;color:#1C1C1C;font-weight:600;">${name}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Email</td><td style="padding:10px 0;color:#1C1C1C;">${email || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Phone</td><td style="padding:10px 0;color:#1C1C1C;">${phone || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Organization</td><td style="padding:10px 0;color:#1C1C1C;">${organization || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Org Type</td><td style="padding:10px 0;color:#1C1C1C;">${orgType || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Budget</td><td style="padding:10px 0;color:#1C1C1C;">${budget || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Services</td><td style="padding:10px 0;color:#1C1C1C;">${Array.isArray(services) ? services.join(', ') : (services || '—')}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;width:140px;">Name</td><td style="padding:10px 0;color:#1C1C1C;font-weight:600;">${esc(name)}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Email</td><td style="padding:10px 0;color:#1C1C1C;">${esc(email) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Phone</td><td style="padding:10px 0;color:#1C1C1C;">${esc(phone) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Organization</td><td style="padding:10px 0;color:#1C1C1C;">${esc(organization) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Org Type</td><td style="padding:10px 0;color:#1C1C1C;">${esc(orgType) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Budget</td><td style="padding:10px 0;color:#1C1C1C;">${esc(budget) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Services</td><td style="padding:10px 0;color:#1C1C1C;">${esc(Array.isArray(services) ? services.join(', ') : services) || '—'}</td></tr>
           </table>
           <div style="margin-top:24px;padding:20px;background:#FFF5F0;border-radius:8px;border-left:4px solid #FF8C61;">
             <p style="margin:0 0 8px;color:#6B7280;font-size:13px;font-weight:600;">PROJECT DESCRIPTION</p>
-            <p style="margin:0;color:#1C1C1C;line-height:1.6;">${description}</p>
+            <p style="margin:0;color:#1C1C1C;line-height:1.6;">${esc(description)}</p>
           </div>
           <p style="margin-top:24px;color:#6B7280;font-size:13px;">Inquiry ID: ${inquiry.id}</p>
         </div>
       </div>
     `
 
-    transporter.sendMail({
-      from: `"PeachWeb Inquiries" <${process.env.EMAIL_USER}>`,
-      to: 'peachwebdevelopment@gmail.com',
-      subject: `New Website Request from ${name}${organization ? ' (' + organization + ')' : ''}`,
-      html: notifyHtml
-    }).catch(err => console.error('Notify email failed:', err.message))
+    let emailed = false
+    let emailError = null
+    try {
+      await transporter.sendMail({
+        from: `"PeachWeb Inquiries" <${process.env.EMAIL_USER}>`,
+        to: 'peachwebdevelopment@gmail.com',
+        subject: `New Website Request from ${name}${organization ? ' (' + organization + ')' : ''}`,
+        html: notifyHtml
+      })
+      emailed = true
+    } catch (err) {
+      emailError = err.message
+      console.error('Notify email failed:', err.message)
+    }
 
     // Auto-reply ONLY if email provided
     if (email && email.trim()) {
@@ -124,7 +152,7 @@ app.post('/api/inquiries', async (req, res) => {
             <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:15px;">Web Development & AI Chatbots</p>
           </div>
           <div style="padding:40px;">
-            <h2 style="color:#1C1C1C;font-size:22px;margin:0 0 16px;">Hi ${name}, thanks for reaching out!</h2>
+            <h2 style="color:#1C1C1C;font-size:22px;margin:0 0 16px;">Hi ${esc(name)}, thanks for reaching out!</h2>
             <p style="color:#374151;line-height:1.7;font-size:15px;margin:0 0 24px;">Thanks for contacting PeachWeb. We will get back to you in a few business days. Stay tuned to receive further information for your request.</p>
             <div style="background:#FFF5F0;border-radius:12px;padding:24px;margin-bottom:24px;">
               <p style="margin:0 0 16px;font-weight:700;color:#1C1C1C;">Here's what happens next:</p>
@@ -153,10 +181,11 @@ app.post('/api/inquiries', async (req, res) => {
         to: email,
         subject: 'Thanks for contacting PeachWeb!',
         html: autoReplyHtml
-      }).catch(err => console.error('Auto-reply failed:', err.message))
+      }).catch(err => console.error('Auto-reply to', email, 'failed:', err.message))
     }
 
-    res.status(201).json({ success: true, id: inquiry.id })
+    // The inquiry is saved either way; `emailed` tells us if the notification got out.
+    res.status(201).json({ success: true, id: inquiry.id, emailed, emailError })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Server error. Please try again.' })
@@ -197,7 +226,7 @@ app.delete('/api/inquiries/:id', (req, res) => {
   res.json({ success: true })
 })
 
-// POST /api/chat — AI chatbot via Claude
+// POST /api/chat — AI chatbot via Groq
 app.post('/api/chat', async (req, res) => {
   try {
     const { messages } = req.body
@@ -229,8 +258,13 @@ Keep answers warm, helpful, and concise (2-4 sentences max). If someone wants to
 
 After every response, end with exactly this line on its own: "Would you like to know more, or is that all?"`
 
-    const response = await groq.chat.completions.create({
-      model: 'llama-3.1-8b-instant',
+    const client = getGroq()
+    if (!client) {
+      return res.status(503).json({ error: 'Chat unavailable — GROQ_API_KEY is not set on the server.' })
+    }
+
+    const response = await client.chat.completions.create({
+      model: CHAT_MODEL,
       max_tokens: 400,
       messages: [
         { role: 'system', content: systemPrompt },
@@ -240,9 +274,29 @@ After every response, end with exactly this line on its own: "Would you like to 
 
     res.json({ reply: response.choices[0].message.content })
   } catch (err) {
-    console.error('Chat error:', err.message)
-    res.status(500).json({ error: 'Chat unavailable right now.' })
+    // Surface the upstream status/code so failures are diagnosable without dashboard access.
+    const status = err.status || 500
+    const code = err.error?.error?.code || err.code || null
+    console.error('Chat error:', status, code, err.message)
+    res.status(status === 401 || status === 404 ? 502 : 500).json({
+      error: 'Chat unavailable right now.',
+      upstreamStatus: status,
+      upstreamCode: code,
+      model: CHAT_MODEL
+    })
   }
+})
+
+// GET /api/health — config check. Never returns secrets, only whether they are usable.
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    chatModel: CHAT_MODEL,
+    groqKeySet: Boolean(process.env.GROQ_API_KEY),
+    emailUserSet: Boolean(process.env.EMAIL_USER),
+    emailPassSet: Boolean(process.env.EMAIL_PASS),
+    smtpReady: emailReady
+  })
 })
 
 app.listen(PORT, () => console.log(`PeachWeb backend running on http://localhost:${PORT}`))
