@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import nodemailer from 'nodemailer'
 import Groq from 'groq-sdk'
+import { Resend } from 'resend'
 import { v4 as uuidv4 } from 'uuid'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
@@ -43,14 +44,35 @@ const dataDir = join(__dirname, 'data')
 if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true })
 if (!existsSync(DATA_FILE)) writeFileSync(DATA_FILE, '[]', 'utf8')
 
-// --- Email transporter ---
+// --- Email ---
+// Render's free tier blackholes outbound SMTP (ports 25/465/587), so Gmail/nodemailer
+// times out there. Resend goes over HTTPS and is unaffected; SMTP stays as a fallback
+// for local dev and paid instances.
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const MAIL_FROM = process.env.MAIL_FROM || 'PeachWeb <onboarding@resend.dev>'
+const INQUIRY_INBOX = process.env.INQUIRY_INBOX || 'peachwebdevelopment@gmail.com'
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  // Without these a blocked port hangs the request for ~2 minutes.
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000
 })
+
+async function sendEmail({ from, to, subject, html }) {
+  if (resend) {
+    const { error } = await resend.emails.send({ from: from || MAIL_FROM, to, subject, html })
+    if (error) throw new Error(error.message || 'Resend rejected the message')
+    return 'resend'
+  }
+  await transporter.sendMail({ from: from || MAIL_FROM, to, subject, html })
+  return 'smtp'
+}
 
 // --- Groq client (lazy: a missing key must not take down the whole server) ---
 let groq = null
@@ -62,11 +84,16 @@ function getGroq() {
 
 const CHAT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
 
-// --- Verify SMTP credentials at boot (logs only, never sends mail) ---
+// --- Check the active email transport at boot (logs only, never sends mail) ---
 let emailReady = false
-transporter.verify()
-  .then(() => { emailReady = true; console.log('SMTP ready — inquiry emails will send.') })
-  .catch(err => console.error('SMTP NOT ready — inquiry emails will fail:', err.message))
+if (resend) {
+  emailReady = true
+  console.log(`Email transport: Resend (HTTPS), from ${MAIL_FROM}`)
+} else {
+  transporter.verify()
+    .then(() => { emailReady = true; console.log('Email transport: SMTP ready.') })
+    .catch(err => console.error('Email transport: SMTP NOT ready — inquiry emails will fail:', err.message))
+}
 
 // Escape user input before it goes into an HTML email body
 function esc(v) {
@@ -131,13 +158,13 @@ app.post('/api/inquiries', async (req, res) => {
     let emailed = false
     let emailError = null
     try {
-      await transporter.sendMail({
-        from: `"PeachWeb Inquiries" <${process.env.EMAIL_USER}>`,
-        to: 'peachwebdevelopment@gmail.com',
+      const via = await sendEmail({
+        to: INQUIRY_INBOX,
         subject: `New Website Request from ${name}${organization ? ' (' + organization + ')' : ''}`,
         html: notifyHtml
       })
       emailed = true
+      console.log(`Notify email sent via ${via} for inquiry ${inquiry.id}`)
     } catch (err) {
       emailError = err.message
       console.error('Notify email failed:', err.message)
@@ -176,8 +203,7 @@ app.post('/api/inquiries', async (req, res) => {
           </div>
         </div>
       `
-      transporter.sendMail({
-        from: `"PeachWeb" <${process.env.EMAIL_USER}>`,
+      sendEmail({
         to: email,
         subject: 'Thanks for contacting PeachWeb!',
         html: autoReplyHtml
@@ -293,9 +319,9 @@ app.get('/api/health', (req, res) => {
     ok: true,
     chatModel: CHAT_MODEL,
     groqKeySet: Boolean(process.env.GROQ_API_KEY),
-    emailUserSet: Boolean(process.env.EMAIL_USER),
-    emailPassSet: Boolean(process.env.EMAIL_PASS),
-    smtpReady: emailReady
+    emailTransport: resend ? 'resend' : 'smtp',
+    mailFrom: MAIL_FROM,
+    emailReady
   })
 })
 
