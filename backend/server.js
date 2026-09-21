@@ -49,8 +49,73 @@ if (!existsSync(DATA_FILE)) writeFileSync(DATA_FILE, '[]', 'utf8')
 // times out there. Resend goes over HTTPS and is unaffected; SMTP stays as a fallback
 // for local dev and paid instances.
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
-const MAIL_FROM = process.env.MAIL_FROM || 'PeachWeb <onboarding@resend.dev>'
 const INQUIRY_INBOX = process.env.INQUIRY_INBOX || 'peachwebdevelopment@gmail.com'
+const GMAIL_SENDER = process.env.EMAIL_USER || 'peachwebdevelopment@gmail.com'
+const gmailEnabled = Boolean(
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN
+)
+const MAIL_FROM = process.env.MAIL_FROM ||
+  (gmailEnabled ? `PeachWeb <${GMAIL_SENDER}>` : 'PeachWeb <onboarding@resend.dev>')
+
+// --- Gmail API over HTTPS ---
+// Sends as the Gmail account itself, and uses HTTPS rather than SMTP, so it works
+// on hosts that block outbound mail ports (Render's free tier does).
+let cachedToken = null // { value, expiresAt }
+
+async function gmailAccessToken() {
+  if (cachedToken && Date.now() < cachedToken.expiresAt) return cachedToken.value
+
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+      grant_type: 'refresh_token'
+    })
+  })
+  const data = await res.json()
+  if (!res.ok) {
+    throw new Error(`Google token refresh failed: ${data.error_description || data.error || res.status}`)
+  }
+  // Refresh a minute early so a token never expires mid-request.
+  cachedToken = { value: data.access_token, expiresAt: Date.now() + (data.expires_in - 60) * 1000 }
+  return cachedToken.value
+}
+
+function buildMime({ from, to, subject, html, replyTo }) {
+  // RFC 2047 for the subject so emoji and accented names survive the header.
+  const encodedSubject = `=?UTF-8?B?${Buffer.from(subject, 'utf8').toString('base64')}?=`
+  const headers = [
+    `From: ${from}`,
+    `To: ${to}`,
+    replyTo ? `Reply-To: ${replyTo}` : null,
+    `Subject: ${encodedSubject}`,
+    'MIME-Version: 1.0',
+    'Content-Type: text/html; charset="UTF-8"',
+    'Content-Transfer-Encoding: base64'
+  ].filter(Boolean)
+
+  const body = Buffer.from(html, 'utf8').toString('base64').replace(/(.{76})/g, '$1\r\n')
+  return `${headers.join('\r\n')}\r\n\r\n${body}`
+}
+
+async function sendViaGmail({ from, to, subject, html, replyTo }) {
+  const token = await gmailAccessToken()
+  const raw = Buffer.from(buildMime({ from, to, subject, html, replyTo }), 'utf8')
+    .toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+
+  const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ raw })
+  })
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(`Gmail API ${res.status}: ${err.error?.message || 'send failed'}`)
+  }
+}
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -64,13 +129,19 @@ const transporter = nodemailer.createTransport({
   socketTimeout: 15000
 })
 
-async function sendEmail({ from, to, subject, html }) {
+async function sendEmail({ from, to, subject, html, replyTo }) {
+  if (gmailEnabled) {
+    await sendViaGmail({ from: from || MAIL_FROM, to, subject, html, replyTo })
+    return 'gmail'
+  }
   if (resend) {
-    const { error } = await resend.emails.send({ from: from || MAIL_FROM, to, subject, html })
+    const { error } = await resend.emails.send({
+      from: from || MAIL_FROM, to, subject, html, reply_to: replyTo
+    })
     if (error) throw new Error(error.message || 'Resend rejected the message')
     return 'resend'
   }
-  await transporter.sendMail({ from: from || MAIL_FROM, to, subject, html })
+  await transporter.sendMail({ from: from || MAIL_FROM, to, subject, html, replyTo })
   return 'smtp'
 }
 
@@ -86,7 +157,12 @@ const CHAT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
 
 // --- Check the active email transport at boot (logs only, never sends mail) ---
 let emailReady = false
-if (resend) {
+if (gmailEnabled) {
+  // Fail loudly at boot if the refresh token is dead, rather than on a customer's submission.
+  gmailAccessToken()
+    .then(() => { emailReady = true; console.log(`Email transport: Gmail API (HTTPS), from ${MAIL_FROM}`) })
+    .catch(err => console.error('Email transport: Gmail API NOT ready —', err.message))
+} else if (resend) {
   emailReady = true
   console.log(`Email transport: Resend (HTTPS), from ${MAIL_FROM}`)
 } else {
@@ -160,6 +236,7 @@ app.post('/api/inquiries', async (req, res) => {
     try {
       const via = await sendEmail({
         to: INQUIRY_INBOX,
+        replyTo: email && email.trim() ? email.trim() : undefined,
         subject: `New Website Request from ${name}${organization ? ' (' + organization + ')' : ''}`,
         html: notifyHtml
       })
@@ -319,7 +396,7 @@ app.get('/api/health', (req, res) => {
     ok: true,
     chatModel: CHAT_MODEL,
     groqKeySet: Boolean(process.env.GROQ_API_KEY),
-    emailTransport: resend ? 'resend' : 'smtp',
+    emailTransport: gmailEnabled ? 'gmail' : (resend ? 'resend' : 'smtp'),
     mailFrom: MAIL_FROM,
     emailReady
   })
