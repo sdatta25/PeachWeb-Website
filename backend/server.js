@@ -51,11 +51,19 @@ if (!existsSync(DATA_FILE)) writeFileSync(DATA_FILE, '[]', 'utf8')
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const INQUIRY_INBOX = process.env.INQUIRY_INBOX || 'peachwebdevelopment@gmail.com'
 const GMAIL_SENDER = process.env.EMAIL_USER || 'peachwebdevelopment@gmail.com'
-const gmailEnabled = Boolean(
-  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN
-)
+// EMAIL_TRANSPORT pins the choice ('gmail' | 'resend' | 'smtp'); otherwise the first
+// configured one wins. Pinning avoids a leftover RESEND_API_KEY silently shadowing SMTP.
+const FORCED_TRANSPORT = process.env.EMAIL_TRANSPORT || null
+const gmailEnabled = FORCED_TRANSPORT
+  ? FORCED_TRANSPORT === 'gmail'
+  : Boolean(
+      process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN
+    )
+const resendEnabled = FORCED_TRANSPORT
+  ? FORCED_TRANSPORT === 'resend'
+  : Boolean(process.env.RESEND_API_KEY)
 const MAIL_FROM = process.env.MAIL_FROM ||
-  (gmailEnabled ? `PeachWeb <${GMAIL_SENDER}>` : 'PeachWeb <onboarding@resend.dev>')
+  (gmailEnabled || !resendEnabled ? `PeachWeb <${GMAIL_SENDER}>` : 'PeachWeb <onboarding@resend.dev>')
 
 // --- Gmail API over HTTPS ---
 // Sends as the Gmail account itself, and uses HTTPS rather than SMTP, so it works
@@ -117,8 +125,14 @@ async function sendViaGmail({ from, to, subject, html, replyTo }) {
   }
 }
 
+// Port 587 + STARTTLS rather than nodemailer's `service: 'gmail'` shortcut, which
+// uses 465. Hosts that allow outbound mail at all tend to allow 587 specifically
+// (Koyeb blocks only 25), so 587 is the portable choice.
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: Number(process.env.SMTP_PORT || 587),
+  secure: false,
+  requireTLS: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -134,7 +148,7 @@ async function sendEmail({ from, to, subject, html, replyTo }) {
     await sendViaGmail({ from: from || MAIL_FROM, to, subject, html, replyTo })
     return 'gmail'
   }
-  if (resend) {
+  if (resendEnabled && resend) {
     const { error } = await resend.emails.send({
       from: from || MAIL_FROM, to, subject, html, reply_to: replyTo
     })
@@ -162,7 +176,7 @@ if (gmailEnabled) {
   gmailAccessToken()
     .then(() => { emailReady = true; console.log(`Email transport: Gmail API (HTTPS), from ${MAIL_FROM}`) })
     .catch(err => console.error('Email transport: Gmail API NOT ready —', err.message))
-} else if (resend) {
+} else if (resendEnabled && resend) {
   emailReady = true
   console.log(`Email transport: Resend (HTTPS), from ${MAIL_FROM}`)
 } else {
@@ -396,7 +410,7 @@ app.get('/api/health', (req, res) => {
     ok: true,
     chatModel: CHAT_MODEL,
     groqKeySet: Boolean(process.env.GROQ_API_KEY),
-    emailTransport: gmailEnabled ? 'gmail' : (resend ? 'resend' : 'smtp'),
+    emailTransport: gmailEnabled ? 'gmail' : (resendEnabled && resend ? 'resend' : 'smtp'),
     mailFrom: MAIL_FROM,
     emailReady
   })

@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { API_URL } from '../lib/api'
 
-const API_URL = 'https://peachweb-backend.onrender.com'
 
 const orgTypes = [
   'Local Business',
