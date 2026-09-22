@@ -54,6 +54,24 @@ const GMAIL_SENDER = process.env.EMAIL_USER || 'peachwebdevelopment@gmail.com'
 // EMAIL_TRANSPORT pins the choice ('gmail' | 'resend' | 'smtp'); otherwise the first
 // configured one wins. Pinning avoids a leftover RESEND_API_KEY silently shadowing SMTP.
 const FORCED_TRANSPORT = process.env.EMAIL_TRANSPORT || null
+// A relay is a tiny serverless function on a host that permits outbound SMTP.
+// Render's free tier blocks those ports; Netlify/Vercel functions (AWS Lambda) do not.
+const relayEnabled = FORCED_TRANSPORT
+  ? FORCED_TRANSPORT === 'relay'
+  : Boolean(process.env.MAIL_RELAY_URL && process.env.MAIL_RELAY_SECRET)
+
+async function sendViaRelay({ from, to, subject, html, replyTo }) {
+  const res = await fetch(process.env.MAIL_RELAY_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-relay-secret': process.env.MAIL_RELAY_SECRET
+    },
+    body: JSON.stringify({ from, to, subject, html, replyTo })
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(`Relay ${res.status}: ${data.error || 'send failed'}`)
+}
 const gmailEnabled = FORCED_TRANSPORT
   ? FORCED_TRANSPORT === 'gmail'
   : Boolean(
@@ -63,7 +81,9 @@ const resendEnabled = FORCED_TRANSPORT
   ? FORCED_TRANSPORT === 'resend'
   : Boolean(process.env.RESEND_API_KEY)
 const MAIL_FROM = process.env.MAIL_FROM ||
-  (gmailEnabled || !resendEnabled ? `PeachWeb <${GMAIL_SENDER}>` : 'PeachWeb <onboarding@resend.dev>')
+  (resendEnabled && !gmailEnabled && !relayEnabled
+    ? 'PeachWeb <onboarding@resend.dev>'
+    : `PeachWeb <${GMAIL_SENDER}>`)
 
 // --- Gmail API over HTTPS ---
 // Sends as the Gmail account itself, and uses HTTPS rather than SMTP, so it works
@@ -144,6 +164,10 @@ const transporter = nodemailer.createTransport({
 })
 
 async function sendEmail({ from, to, subject, html, replyTo }) {
+  if (relayEnabled) {
+    await sendViaRelay({ from: from || MAIL_FROM, to, subject, html, replyTo })
+    return 'relay'
+  }
   if (gmailEnabled) {
     await sendViaGmail({ from: from || MAIL_FROM, to, subject, html, replyTo })
     return 'gmail'
@@ -171,7 +195,10 @@ const CHAT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
 
 // --- Check the active email transport at boot (logs only, never sends mail) ---
 let emailReady = false
-if (gmailEnabled) {
+if (relayEnabled) {
+  emailReady = true
+  console.log(`Email transport: relay -> ${process.env.MAIL_RELAY_URL}`)
+} else if (gmailEnabled) {
   // Fail loudly at boot if the refresh token is dead, rather than on a customer's submission.
   gmailAccessToken()
     .then(() => { emailReady = true; console.log(`Email transport: Gmail API (HTTPS), from ${MAIL_FROM}`) })
@@ -410,7 +437,9 @@ app.get('/api/health', (req, res) => {
     ok: true,
     chatModel: CHAT_MODEL,
     groqKeySet: Boolean(process.env.GROQ_API_KEY),
-    emailTransport: gmailEnabled ? 'gmail' : (resendEnabled && resend ? 'resend' : 'smtp'),
+    emailTransport: relayEnabled ? 'relay'
+      : gmailEnabled ? 'gmail'
+      : (resendEnabled && resend ? 'resend' : 'smtp'),
     mailFrom: MAIL_FROM,
     emailReady
   })
