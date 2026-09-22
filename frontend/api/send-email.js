@@ -5,8 +5,19 @@ import nodemailer from 'nodemailer'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'POST only' })
-  if (req.headers['x-relay-secret'] !== process.env.MAIL_RELAY_SECRET) {
+
+  // Fail closed. Without this, an unset MAIL_RELAY_SECRET compares undefined to
+  // undefined and lets every caller through -- an open relay on a public URL.
+  const secret = process.env.MAIL_RELAY_SECRET
+  if (!secret) {
+    console.error('MAIL_RELAY_SECRET is not set; refusing to relay.')
+    return res.status(503).json({ error: 'Relay not configured' })
+  }
+  if (req.headers['x-relay-secret'] !== secret) {
     return res.status(401).json({ error: 'Unauthorized' })
+  }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(503).json({ error: 'Relay missing EMAIL_USER/EMAIL_PASS' })
   }
 
   try {
