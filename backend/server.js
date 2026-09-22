@@ -20,6 +20,11 @@ app.use(cors())
 app.use(express.json())
 
 // --- JSON file storage (no native modules needed) ---
+// NOTE: on hosts with an ephemeral filesystem (Render's free tier included) this
+// file is wiped on every deploy and restart. Treat it as a convenience cache for
+// the admin endpoints, never as the record of a lead -- the notification email is
+// the durable copy, which is why a submission fails loudly if that email does not
+// get out. See the emailed check in POST /api/inquiries below.
 const DATA_FILE = join(__dirname, 'data', 'inquiries.json')
 
 function readInquiries() {
@@ -219,6 +224,23 @@ function esc(v) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
+// --- Admin auth ---
+// The key used to live in the source of a public repo, which meant anyone who
+// read it could list every inquiry. It now comes from the environment, and the
+// endpoints refuse to answer at all if it is unset.
+const ADMIN_KEY = process.env.ADMIN_KEY
+
+function requireAdmin(req, res, next) {
+  if (!ADMIN_KEY) {
+    console.error('ADMIN_KEY is not set; refusing admin request.')
+    return res.status(503).json({ error: 'Admin API not configured.' })
+  }
+  if (req.headers['x-admin-key'] !== ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  next()
+}
+
 // POST /api/inquiries — submit contact form
 app.post('/api/inquiries', async (req, res) => {
   try {
@@ -328,7 +350,18 @@ app.post('/api/inquiries', async (req, res) => {
       }).catch(err => console.error('Auto-reply to', email, 'failed:', err.message))
     }
 
-    // The inquiry is saved either way; `emailed` tells us if the notification got out.
+    // The local file is wiped on redeploy, so a lead only truly exists once the
+    // notification email is out. Tell the customer rather than showing a success
+    // screen over a submission that is about to evaporate.
+    if (!emailed) {
+      return res.status(502).json({
+        error: "We couldn't submit your request right now. Please email peachwebdevelopment@gmail.com directly — sorry about that!",
+        id: inquiry.id,
+        emailed: false,
+        emailError
+      })
+    }
+
     res.status(201).json({ success: true, id: inquiry.id, emailed, emailError })
   } catch (err) {
     console.error(err)
@@ -337,19 +370,13 @@ app.post('/api/inquiries', async (req, res) => {
 })
 
 // GET /api/inquiries — admin only
-app.get('/api/inquiries', (req, res) => {
-  if (req.headers['x-admin-key'] !== 'peachwebadmin2024') {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+app.get('/api/inquiries', requireAdmin, (req, res) => {
   const inquiries = readInquiries()
   res.json([...inquiries].reverse())
 })
 
 // PATCH /api/inquiries/:id — update status
-app.patch('/api/inquiries/:id', (req, res) => {
-  if (req.headers['x-admin-key'] !== 'peachwebadmin2024') {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+app.patch('/api/inquiries/:id', requireAdmin, (req, res) => {
   const inquiries = readInquiries()
   const idx = inquiries.findIndex(i => i.id === req.params.id)
   if (idx === -1) return res.status(404).json({ error: 'Not found' })
@@ -360,10 +387,7 @@ app.patch('/api/inquiries/:id', (req, res) => {
 })
 
 // DELETE /api/inquiries/:id
-app.delete('/api/inquiries/:id', (req, res) => {
-  if (req.headers['x-admin-key'] !== 'peachwebadmin2024') {
-    return res.status(401).json({ error: 'Unauthorized' })
-  }
+app.delete('/api/inquiries/:id', requireAdmin, (req, res) => {
   const inquiries = readInquiries()
   const filtered = inquiries.filter(i => i.id !== req.params.id)
   writeInquiries(filtered)

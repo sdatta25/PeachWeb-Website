@@ -91,13 +91,16 @@ Open **http://localhost:5174** in your browser.
 ## Admin: Viewing Inquiries
 
 To view all submitted inquiries:
+Set `ADMIN_KEY` in your environment to a long random string; the admin endpoints
+refuse all requests until it is set.
+
 ```bash
-curl -H "x-admin-key: peachwebadmin2024" http://localhost:3002/api/inquiries
+curl -H "x-admin-key: $ADMIN_KEY" http://localhost:3002/api/inquiries
 ```
 
 To update an inquiry's status:
 ```bash
-curl -X PATCH -H "x-admin-key: peachwebadmin2024" \
+curl -X PATCH -H "x-admin-key: $ADMIN_KEY" \
   -H "Content-Type: application/json" \
   -d '{"status":"contacted"}' \
   http://localhost:3002/api/inquiries/<id>
