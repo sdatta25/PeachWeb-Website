@@ -7,7 +7,7 @@ const founders = [
     photo: '/founders/souren.jpg',
     initials: 'SD',
     linkedin: 'https://www.linkedin.com/in/sourendatta/',
-    bio: 'Builds the front end, the AI chatbots, and the systems behind them — and handles most of what clients see day to day.',
+    bio: 'Started building sites for nonprofits and school groups and got hooked on the moment one goes live — watching people actually find an organization that was invisible the week before. Co-founded PeachWeb so the small businesses around Atlanta could have that too: a site they are proud to hand someone, without agency prices.',
     work: [
       'PeachWeb',
       'Finance For Movement',
@@ -22,7 +22,7 @@ const founders = [
     photo: '/founders/adwait.jpg',
     initials: 'AD',
     linkedin: 'https://www.linkedin.com/in/adwaitdhaneshwar/',
-    bio: 'Builds sites for school organizations and clubs, with a focus on clean layouts and pages that stay easy to update.',
+    bio: 'Fell for web development building pages for school organizations, where a clear, well-made site changed how many people actually showed up. Co-founded PeachWeb to bring that same lift to local Atlanta businesses still getting by on an outdated page — or none at all.',
     work: [
       'STEM Simplified',
       'AHS Robotics',
