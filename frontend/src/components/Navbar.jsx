@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom'
 import { PeachLogoFull } from './PeachLogo'
-import { navRoutes } from '../routes'
 
 export default function Navbar({ onRequest }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -13,7 +11,14 @@ export default function Navbar({ onRequest }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const links = navRoutes
+  const links = [
+    { label: 'Why PeachWeb', href: '#why' },
+    { label: 'What We Build', href: '#build' },
+    { label: 'How It Works', href: '#process' },
+    { label: 'Founders', href: '#founders' },
+    { label: 'Portfolio', href: '#portfolio' },
+    { label: 'Contact', href: '#contact' },
+  ]
 
   return (
     <nav
@@ -26,24 +31,20 @@ export default function Navbar({ onRequest }) {
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/">
+        <a href="#">
           <PeachLogoFull iconSize={34} />
-        </Link>
+        </a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {links.map(link => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              className="text-sm font-medium transition-colors"
-              style={({ isActive }) => ({
-                color: isActive ? '#E8571A' : '#4B5563',
-                fontWeight: isActive ? 700 : 500,
-              })}
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
             >
               {link.label}
-            </NavLink>
+            </a>
           ))}
         </div>
 
@@ -80,18 +81,14 @@ export default function Navbar({ onRequest }) {
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col gap-4">
           {links.map(link => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              className="text-sm font-medium transition-colors"
-              style={({ isActive }) => ({
-                color: isActive ? '#E8571A' : '#374151',
-                fontWeight: isActive ? 700 : 500,
-              })}
+            <a
+              key={link.href}
+              href={link.href}
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
-            </NavLink>
+            </a>
           ))}
           <button
             onClick={() => { setMenuOpen(false); onRequest(); }}

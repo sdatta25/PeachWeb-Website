@@ -1,8 +1,13 @@
-import { Link } from 'react-router-dom'
 import { PeachLogoFull } from './PeachLogo'
-import { navRoutes } from '../routes'
 
-const navLinks = navRoutes
+const navLinks = [
+  { label: 'Why PeachWeb', href: '#why' },
+  { label: 'What We Build', href: '#build' },
+  { label: 'How It Works', href: '#process' },
+  { label: 'Founders', href: '#founders' },
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Contact', href: '#contact' },
+]
 
 const socials = [
   {
@@ -35,21 +40,21 @@ export default function Footer() {
         {/* Top Row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           {/* Logo */}
-          <Link to="/">
+          <a href="#">
             <PeachLogoFull iconSize={30} textColor="#FF8C61" />
-          </Link>
+          </a>
 
           {/* Nav Links */}
           <div className="flex flex-wrap justify-center gap-6">
             {navLinks.map(link => (
-              <Link
-                key={link.path}
-                to={link.path}
+              <a
+                key={link.href}
+                href={link.href}
                 className="text-sm transition-colors hover:text-white"
                 style={{ color: '#9CA3AF' }}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
           </div>
 

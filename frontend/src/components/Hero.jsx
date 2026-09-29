@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import HeroCanvas from './HeroCanvas'
 
 export default function Hero({ onRequest }) {
@@ -71,12 +70,13 @@ export default function Hero({ onRequest }) {
               Request a Website
               <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">→</span>
             </button>
-            <Link to="/how-it-works"
+            <a
+              href="#process"
               className="px-8 py-4 rounded-full text-base font-bold border-2 transition-all duration-200 hover:bg-orange-50 hover:-translate-y-0.5"
               style={{ borderColor: '#FF8C61', color: '#FF8C61' }}
             >
-              See How It Works →
-            </Link>
+              See How It Works ↓
+            </a>
           </div>
 
           {/* Trust row */}
