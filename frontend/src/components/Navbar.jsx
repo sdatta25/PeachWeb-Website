@@ -15,6 +15,8 @@ export default function Navbar({ onRequest }) {
     { label: 'Why PeachWeb', href: '#why' },
     { label: 'What We Build', href: '#build' },
     { label: 'How It Works', href: '#process' },
+    { label: 'Founders', href: '#founders' },
+    { label: 'Portfolio', href: '#portfolio' },
     { label: 'Contact', href: '#contact' },
   ]
 
