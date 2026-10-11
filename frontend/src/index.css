@@ -2,42 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
-* { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
-body { background: #ffffff; -webkit-font-smoothing: antialiased; overflow-x: hidden; width: 100%; }
+@layer base {
+  html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+  body {
+    @apply bg-ivory text-charcoal font-sans;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  h1, h2, h3, .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'SOFT' 100;
+    letter-spacing: -0.015em;
+  }
+  /* Sections sit under a fixed 72px nav. */
+  section[id] { scroll-margin-top: 72px; }
+
+  :focus-visible {
+    outline: 2px solid #A3431D;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .on-dark :focus-visible { outline-color: #EFA77E; }
+
+  ::selection { background: #F8DDC9; color: #241D19; }
+}
+
+@layer components {
+  .page { @apply max-w-page mx-auto px-5 sm:px-8; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-[0.95rem] font-semibold
+      transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed;
+  }
+  .btn-primary { @apply btn bg-terracotta text-ivory hover:bg-terracotta-deep active:bg-terracotta-deep; }
+  .btn-quiet   { @apply btn text-charcoal border border-charcoal/25 hover:border-charcoal hover:bg-charcoal/[0.03]; }
+  .btn-on-dark { @apply btn bg-peach text-charcoal hover:bg-peach-soft; }
+
+  .text-link {
+    @apply underline decoration-1 underline-offset-4 decoration-terracotta/40 hover:decoration-terracotta transition-colors;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line bg-white px-4 py-3 text-[0.95rem] text-charcoal
+      placeholder:text-stone/60 transition-colors outline-none
+      focus:border-terracotta focus:ring-2 focus:ring-peach/40;
+  }
+  .field[aria-invalid='true'] { @apply border-red-700; }
+}
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
-}
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); }
-  30%            { transform: translateY(-6px); }
-}
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes chat-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255,140,97,0.4); }
-  50%       { box-shadow: 0 0 0 12px rgba(255,140,97,0); }
-}
 
-.animate-fade-up  { animation: fadeUp  0.7s ease forwards; }
-.animate-fade-in  { animation: fadeIn  0.9s ease forwards 0.2s; opacity: 0; }
-.animate-float    { animation: float   4s  ease-in-out infinite; }
+.animate-fade-up  { animation: fadeUp 0.7s ease both; }
+.animate-fade-in  { animation: fadeIn 0.9s ease both 0.2s; }
 .follow-up-enter  { animation: fadeSlideUp 0.25s ease forwards; }
 
 .chat-messages::-webkit-scrollbar       { width: 4px; }
-.chat-messages::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-.chat-messages::-webkit-scrollbar-thumb { background: #FF8C61; border-radius: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: #E5D7C7; border-radius: 4px; }
 
-::selection { background: #FFE4D6; color: #1C1C1C; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

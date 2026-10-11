@@ -2,8 +2,8 @@ import { PeachLogoFull } from './PeachLogo'
 
 const navLinks = [
   { label: 'Why PeachWeb', href: '#why' },
-  { label: 'What We Build', href: '#build' },
-  { label: 'How It Works', href: '#process' },
+  { label: 'What we build', href: '#build' },
+  { label: 'How it works', href: '#process' },
   { label: 'Founders', href: '#founders' },
   { label: 'Portfolio', href: '#portfolio' },
   { label: 'Contact', href: '#contact' },
@@ -35,63 +35,55 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#111111', borderTop: '3px solid #FF8C61' }}>
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* Top Row */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-          {/* Logo */}
-          <a href="#">
-            <PeachLogoFull iconSize={30} textColor="#FF8C61" />
-          </a>
-
-          {/* Nav Links */}
-          <div className="flex flex-wrap justify-center gap-6">
-            {navLinks.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm transition-colors hover:text-white"
-                style={{ color: '#9CA3AF' }}
-              >
-                {link.label}
-              </a>
-            ))}
+    <footer className="on-dark bg-charcoal text-mist border-t border-ivory/10">
+      <div className="page py-14">
+        <div className="grid md:grid-cols-12 gap-10">
+          <div className="md:col-span-5">
+            <a href="#" aria-label="PeachWeb, back to top" className="inline-block rounded-md">
+              <PeachLogoFull iconSize={30} textColor="#EFA77E" />
+            </a>
+            <p className="mt-4 text-sm leading-relaxed max-w-xs">
+              Websites and AI chatbots for local businesses and nonprofits in the Atlanta area.
+            </p>
           </div>
 
-          {/* Socials */}
-          <div className="flex items-center gap-3">
-            {socials.map(sm => (
-              <a
-                key={sm.label}
-                href={sm.href}
-                target="_blank"
-                rel="noopener"
-                aria-label={`PeachWeb on ${sm.label}`}
-                title={`PeachWeb on ${sm.label}`}
-                className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
-                style={{ backgroundColor: '#1f1f1f', color: '#FF8C61', border: '1px solid #2a2a2a' }}
-              >
-                {sm.icon}
-              </a>
-            ))}
-          </div>
+          <nav aria-label="Footer" className="md:col-span-4">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+              {navLinks.map(link => (
+                <li key={link.href}>
+                  <a href={link.href} className="hover:text-ivory transition-colors">{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          {/* Email */}
-          <a
-            href="mailto:peachwebdevelopment@gmail.com"
-            className="text-sm font-medium transition-opacity hover:opacity-80 break-all text-center md:text-right"
-            style={{ color: '#FF8C61' }}
-          >
-            📧 peachwebdevelopment@gmail.com
-          </a>
+          <div className="md:col-span-3 space-y-4">
+            <a
+              href="mailto:peachwebdevelopment@gmail.com"
+              className="block text-sm text-peach hover:text-peach-soft transition-colors break-all"
+            >
+              peachwebdevelopment@gmail.com
+            </a>
+            <div className="flex items-center gap-2">
+              {socials.map(sm => (
+                <a
+                  key={sm.label}
+                  href={sm.href}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`PeachWeb on ${sm.label}`}
+                  title={`PeachWeb on ${sm.label}`}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center border border-ivory/15 text-peach hover:border-peach transition-colors"
+                >
+                  {sm.icon}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t mb-6" style={{ borderColor: '#2a2a2a' }}></div>
-
-        {/* Bottom Row */}
-        <p className="text-center text-sm" style={{ color: '#6B7280' }}>
-          © 2024 PeachWeb. Websites & AI Chatbots for Local Businesses.
+        <p className="mt-12 pt-6 border-t border-ivory/10 text-sm">
+          © {new Date().getFullYear()} PeachWeb
         </p>
       </div>
     </footer>

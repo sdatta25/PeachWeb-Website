@@ -140,7 +140,21 @@ export default function HeroCanvas() {
 
       renderer.render(scene, camera)
     }
-    animate()
+
+    // Visitors who ask for reduced motion get a single still frame of the same scene.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    // Stop drawing while the hero is scrolled out of view; resume where it left off.
+    let visible = true
+    let pausedAt = 0
+    const observer = new IntersectionObserver(([entry]) => {
+      if (reduceMotion) return
+      if (entry.isIntersecting && !visible) { visible = true; clock.start(); clock.elapsedTime = pausedAt; animate() }
+      else if (!entry.isIntersecting && visible) { visible = false; pausedAt = clock.getElapsedTime(); cancelAnimationFrame(animId) }
+    })
+    observer.observe(mount)
+
+    if (reduceMotion) renderer.render(scene, camera)
+    else animate()
 
     // ── Resize ──
     const onResize = () => {
@@ -149,11 +163,13 @@ export default function HeroCanvas() {
       camera.aspect = w / h
       camera.updateProjectionMatrix()
       renderer.setSize(w, h)
+      if (reduceMotion) renderer.render(scene, camera)
     }
     window.addEventListener('resize', onResize)
 
     return () => {
       cancelAnimationFrame(animId)
+      observer.disconnect()
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('resize', onResize)
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement)

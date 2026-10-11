@@ -1,78 +1,32 @@
 export default function ContactSection({ onRequest }) {
   return (
-    <section
-      id="contact"
-      className="py-28 relative overflow-hidden"
-      style={{ backgroundColor: '#111111' }}
-    >
-      {/* Background glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: 'radial-gradient(circle, #FF8C61, transparent)' }}
-      />
-
-      <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-        {/* Overline */}
-        <p className="text-xs font-bold uppercase tracking-widest mb-5" style={{ color: '#FF8C61' }}>
-          Get In Touch
-        </p>
-
-        {/* Heading */}
-        <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-          Ready to Get{' '}
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #FF8C61, #FFAB76)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            Started?
-          </span>
-        </h2>
-
-        <p className="text-base leading-relaxed mb-10 max-w-xl mx-auto" style={{ color: '#9CA3AF' }}>
-          Whether you need a website, an AI chatbot, or both — we'd love to help your business grow.
-          Let's build something great together.
-        </p>
-
-        {/* CTA Button */}
-        <button
-          onClick={onRequest}
-          className="group inline-flex items-center gap-3 px-10 py-4 rounded-full text-base font-bold text-white mb-10 transition-all duration-200 hover:-translate-y-0.5"
-          style={{
-            background: 'linear-gradient(135deg, #FF8C61, #E8571A)',
-            boxShadow: '0 8px 32px rgba(255, 140, 97, 0.4)',
-          }}
-        >
-          Request a Website
-          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-        </button>
-
-        {/* Divider */}
-        <div className="flex items-center gap-4 mb-8 max-w-xs mx-auto">
-          <div className="flex-1 h-px" style={{ backgroundColor: '#2a2a2a' }} />
-          <span className="text-xs" style={{ color: '#4B5563' }}>or reach us directly</span>
-          <div className="flex-1 h-px" style={{ backgroundColor: '#2a2a2a' }} />
+    <section id="contact" aria-labelledby="contact-heading" className="on-dark w-full bg-charcoal text-ivory py-24 lg:py-32">
+      <div className="page grid lg:grid-cols-12 gap-x-8 gap-y-12">
+        <div className="lg:col-span-7">
+          <h2 id="contact-heading" className="font-display font-medium text-[2.6rem] sm:text-6xl leading-[1.04] mb-7 max-w-[14ch]">
+            Tell us about your business.
+          </h2>
+          <p className="text-mist text-lg leading-relaxed max-w-[34rem] mb-10">
+            Send a request with a few details and we'll reply within 1–2 business days to set up a call.
+            Not sure yet? Email a question, or ask Peachy in the corner of the page.
+          </p>
+          <button onClick={onRequest} className="btn-on-dark px-6 py-3.5 text-base">
+            Request a website
+          </button>
         </div>
 
-        {/* Email */}
-        <a
-          href="mailto:peachwebdevelopment@gmail.com"
-          className="inline-flex items-center gap-2.5 text-sm font-medium transition-all duration-200 hover:opacity-80 mb-8"
-          style={{ color: '#FF8C61' }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-            <polyline points="22,6 12,13 2,6"/>
-          </svg>
-          peachwebdevelopment@gmail.com
-        </a>
-
-        <p className="text-xs" style={{ color: '#4B5563' }}>
-          We typically respond within 1–2 business days.
-        </p>
+        <div className="lg:col-span-5 lg:col-start-8 self-end">
+          <div className="border-t border-ivory/20 pt-6">
+            <h3 className="font-sans text-sm font-semibold text-mist mb-2" style={{ letterSpacing: 0 }}>Email us directly</h3>
+            <a
+              href="mailto:peachwebdevelopment@gmail.com"
+              className="font-display text-xl sm:text-[1.6rem] text-peach hover:text-peach-soft transition-colors [overflow-wrap:anywhere]"
+            >
+              peachwebdevelopment@gmail.com
+            </a>
+            <p className="text-sm text-mist mt-4">We usually reply within 1–2 business days.</p>
+          </div>
+        </div>
       </div>
     </section>
   )

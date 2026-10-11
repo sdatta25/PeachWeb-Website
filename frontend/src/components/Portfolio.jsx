@@ -21,74 +21,66 @@ const portfolio = [
 
 function ArrowIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"
-      strokeLinecap="round" strokeLinejoin="round"
-      className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-      <line x1="7" y1="17" x2="17" y2="7" /><polyline points="7 7 17 7 17 17" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+      className="w-6 h-6 sm:w-7 sm:h-7 transition-transform duration-200 group-hover:translate-x-1 group-hover:-translate-y-1">
+      <line x1="7" y1="17" x2="17" y2="7" /><polyline points="8 7 17 7 17 16" />
     </svg>
   )
 }
 
 export default function Portfolio() {
   return (
-    <section id="portfolio" className="py-28 w-full" style={{ backgroundColor: '#ffffff' }}>
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#FF8C61' }}>
-            Portfolio
-          </p>
-          <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ color: '#1C1C1C' }}>
-            Sites We've Shipped
+    <section id="portfolio" aria-labelledby="portfolio-heading" className="w-full py-24 lg:py-32">
+      <div className="page">
+        <div className="grid lg:grid-cols-12 gap-x-8 mb-14 lg:mb-16">
+          <h2 id="portfolio-heading" className="lg:col-span-6 font-display font-medium text-4xl sm:text-5xl leading-[1.08] mb-5 lg:mb-0">
+            Sites we've built
           </h2>
-          <p className="text-base max-w-md mx-auto" style={{ color: '#9CA3AF' }}>
-            Real websites, live right now — built by the two of us.
+          <p className="lg:col-span-5 lg:col-start-8 text-stone leading-relaxed self-end max-w-[32rem]">
+            All six are live. They're for clubs, nonprofits, and a content creator, and each was built start to
+            finish by one of us.
           </p>
         </div>
 
-        {/* Grouped by builder */}
-        <div className="space-y-14">
+        <div className="space-y-16">
           {portfolio.map(group => (
             <div key={group.builder}>
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-sm font-black whitespace-nowrap" style={{ color: '#1C1C1C' }}>
-                  Built by{' '}
-                  <a
-                    href={group.linkedin}
-                    target="_blank"
-                    rel="noopener"
-                    className="transition-opacity hover:opacity-70"
-                    style={{ color: '#E8571A' }}
-                  >
-                    {group.builder}
-                  </a>
-                </span>
-                <span className="h-px flex-1" style={{ backgroundColor: '#FFE4D6' }} />
-              </div>
+              <p className="text-sm text-stone mb-3">
+                Built by{' '}
+                <a href={group.linkedin} target="_blank" rel="noopener" className="text-link font-semibold text-charcoal">
+                  {group.builder}
+                  <span className="sr-only"> (LinkedIn, opens in a new tab)</span>
+                </a>
+              </p>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <ul className="border-t border-charcoal">
                 {group.sites.map(site => (
-                  <a
-                    key={site.url}
-                    href={site.url}
-                    target="_blank"
-                    rel="noopener"
-                    className="group block bg-white rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-                    style={{ border: '1px solid #F3F4F6', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-base font-black leading-snug" style={{ color: '#1C1C1C' }}>
+                  <li key={site.url} className="border-b border-line">
+                    <a
+                      href={site.url}
+                      target="_blank"
+                      rel="noopener"
+                      className="group grid grid-cols-[1fr_auto] md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_auto] items-center gap-x-6 gap-y-1 py-6 sm:py-8 rounded-sm"
+                    >
+                      <span
+                        className="font-display font-normal text-[1.85rem] sm:text-5xl lg:text-[3.6rem] leading-[1.05] text-charcoal transition-colors duration-200 group-hover:text-terracotta"
+                        style={{ fontVariationSettings: "'SOFT' 100, 'opsz' 144" }}
+                      >
                         {site.name}
-                      </h3>
-                      <span style={{ color: '#FF8C61' }}><ArrowIcon /></span>
-                    </div>
-                    <p className="text-sm mb-4" style={{ color: '#6B7280' }}>{site.blurb}</p>
-                    <p className="text-xs font-medium break-all" style={{ color: '#9CA3AF' }}>
-                      {site.url.replace('https://', '')}
-                    </p>
-                  </a>
+                      </span>
+                      <span className="row-start-2 md:row-start-1 md:col-start-2 text-stone text-[0.95rem] leading-snug">
+                        {site.blurb}
+                        <span className="block text-sm text-stone/80 mt-0.5 break-all">{site.url.replace('https://', '')}</span>
+                      </span>
+                      <span className="row-span-2 md:row-span-1 col-start-2 md:col-start-3 text-terracotta">
+                        <ArrowIcon />
+                        <span className="sr-only">(opens in a new tab)</span>
+                      </span>
+                    </a>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           ))}
         </div>

@@ -1,104 +1,121 @@
 import { useState, useEffect } from 'react'
 import { PeachLogoFull } from './PeachLogo'
 
+const links = [
+  { label: 'Why PeachWeb', href: '#why' },
+  { label: 'What we build', href: '#build' },
+  { label: 'How it works', href: '#process' },
+  { label: 'Founders', href: '#founders' },
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Contact', href: '#contact' },
+]
+
 export default function Navbar({ onRequest }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [active, setActive] = useState('')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const links = [
-    { label: 'Why PeachWeb', href: '#why' },
-    { label: 'What We Build', href: '#build' },
-    { label: 'How It Works', href: '#process' },
-    { label: 'Founders', href: '#founders' },
-    { label: 'Portfolio', href: '#portfolio' },
-    { label: 'Contact', href: '#contact' },
-  ]
+  // Highlight the link for whichever section is crossing the upper third of the viewport.
+  useEffect(() => {
+    const sections = links.map(l => document.querySelector(l.href)).filter(Boolean)
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) setActive('#' + e.target.id) }),
+      { rootMargin: '-30% 0px -65% 0px' }
+    )
+    sections.forEach(s => observer.observe(s))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = e => { if (e.key === 'Escape') setMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 bg-white border-b transition-all duration-300"
-      style={{
-        borderColor: scrolled ? '#FFE4D6' : 'transparent',
-        boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.07)' : 'none',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-      }}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color] duration-300 border-b ${
+        scrolled || menuOpen ? 'bg-ivory/95 backdrop-blur-sm border-line' : 'bg-ivory/0 border-transparent'
+      }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#">
-          <PeachLogoFull iconSize={34} />
+      <nav aria-label="Main" className="page h-[72px] flex items-center justify-between gap-6">
+        <a href="#" aria-label="PeachWeb, back to top" className="rounded-md">
+          <PeachLogoFull iconSize={32} />
         </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <ul className="hidden lg:flex items-center gap-7">
           {links.map(link => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              {link.label}
-            </a>
+            <li key={link.href}>
+              <a
+                href={link.href}
+                aria-current={active === link.href ? 'true' : undefined}
+                className={`relative py-2 text-[0.92rem] font-medium transition-colors hover:text-charcoal
+                  after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-terracotta
+                  after:origin-left after:transition-transform after:duration-200
+                  ${active === link.href ? 'text-charcoal after:scale-x-100' : 'text-stone after:scale-x-0 hover:after:scale-x-100'}`}
+              >
+                {link.label}
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <button
-            onClick={onRequest}
-            className="px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-md"
-            style={{ backgroundColor: '#FF8C61' }}
-          >
-            Request a Website
+        <div className="hidden lg:block">
+          <button onClick={onRequest} className="btn-primary py-2.5">
+            Request a website
           </button>
         </div>
 
-        {/* Mobile Hamburger */}
         <button
-          className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
+          className="lg:hidden -mr-2 p-2 rounded-lg text-charcoal hover:bg-charcoal/5 transition-colors"
+          onClick={() => setMenuOpen(o => !o)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
         >
-          {menuOpen ? (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            {menuOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M4 7h16M4 12h16M4 17h16" />
+            )}
+          </svg>
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col gap-4">
-          {links.map(link => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
-              onClick={() => setMenuOpen(false)}
+        <div id="mobile-menu" className="lg:hidden border-t border-line bg-ivory">
+          <ul className="page py-3">
+            {links.map(link => (
+              <li key={link.href} className="border-b border-line last:border-0">
+                <a
+                  href={link.href}
+                  className="block py-3.5 font-display text-xl text-charcoal"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <div className="page pb-6">
+            <button
+              onClick={() => { setMenuOpen(false); onRequest(); }}
+              className="btn-primary w-full"
             >
-              {link.label}
-            </a>
-          ))}
-          <button
-            onClick={() => { setMenuOpen(false); onRequest(); }}
-            className="mt-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: '#FF8C61' }}
-          >
-            Request a Website
-          </button>
+              Request a website
+            </button>
+          </div>
         </div>
       )}
-    </nav>
+    </header>
   )
 }

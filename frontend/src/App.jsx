@@ -14,15 +14,23 @@ import ChatWidget from './components/ChatWidget'
 export default function App() {
   const [showModal, setShowModal] = useState(false)
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden w-full">
+    <div className="min-h-screen bg-ivory overflow-x-hidden w-full">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] btn-primary"
+      >
+        Skip to content
+      </a>
       <Navbar onRequest={() => setShowModal(true)} />
-      <Hero onRequest={() => setShowModal(true)} />
-      <WhySection />
-      <WhatWeBuild />
-      <HowItWorks />
-      <Founders />
-      <Portfolio />
-      <ContactSection onRequest={() => setShowModal(true)} />
+      <main id="main">
+        <Hero onRequest={() => setShowModal(true)} />
+        <WhySection />
+        <WhatWeBuild />
+        <HowItWorks />
+        <Founders />
+        <Portfolio />
+        <ContactSection onRequest={() => setShowModal(true)} />
+      </main>
       <Footer />
       {showModal && <RequestModal onClose={() => setShowModal(false)} />}
       <ChatWidget />

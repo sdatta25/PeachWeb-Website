@@ -3,11 +3,11 @@ import { useState } from 'react'
 const founders = [
   {
     name: 'Souren Datta',
-    role: 'Co-Founder',
+    role: 'Co-founder',
     photo: '/founders/souren.jpg',
     initials: 'SD',
     linkedin: 'https://www.linkedin.com/in/sourendatta/',
-    bio: 'Started building sites for nonprofits and school groups and got hooked on the moment one goes live — watching people actually find an organization that was invisible the week before. Co-founded PeachWeb so the small businesses around Atlanta could have that too: a site they are proud to hand someone, without agency prices.',
+    bio: 'Started building sites for nonprofits and school groups and got hooked on the moment one goes live, when people can finally find an organization that was invisible the week before. Co-founded PeachWeb so the small businesses around Atlanta could have that too: a site they are proud to hand someone, without agency prices.',
     work: [
       'PeachWeb',
       'Finance For Movement',
@@ -18,11 +18,11 @@ const founders = [
   },
   {
     name: 'Adwait Dhaneshwar',
-    role: 'Co-Founder',
+    role: 'Co-founder',
     photo: '/founders/adwait.jpg',
     initials: 'AD',
     linkedin: 'https://www.linkedin.com/in/adwaitdhaneshwar/',
-    bio: 'Fell for web development building pages for school organizations, where a clear, well-made site changed how many people actually showed up. Co-founded PeachWeb to bring that same lift to local Atlanta businesses still getting by on an outdated page — or none at all.',
+    bio: 'Fell for web development building pages for school organizations, where a clear, well-made site changed how many people actually showed up. Co-founded PeachWeb to bring that same lift to local Atlanta businesses still getting by on an outdated page, or none at all.',
     work: [
       'STEM Simplified',
       'AHS Robotics',
@@ -41,13 +41,14 @@ function LinkedInIcon({ className }) {
 
 function Portrait({ src, initials, name }) {
   const [failed, setFailed] = useState(false)
+  const size = 'w-32 h-32 sm:w-40 sm:h-40'
 
   if (failed) {
     return (
       <div
-        className="w-28 h-28 rounded-full flex items-center justify-center text-2xl font-black flex-shrink-0"
-        style={{ backgroundColor: '#FFE4D6', color: '#E8571A' }}
-        aria-label={name}
+        className={`${size} rounded-2xl flex items-center justify-center font-display text-4xl flex-shrink-0 bg-peach-soft text-terracotta`}
+        role="img"
+        aria-label={`Portrait of ${name}`}
       >
         {initials}
       </div>
@@ -57,88 +58,65 @@ function Portrait({ src, initials, name }) {
   return (
     <img
       src={src}
-      alt={name}
+      alt={`Portrait of ${name}`}
+      width="160"
+      height="160"
       onError={() => setFailed(true)}
       // A dev server that answers a missing file with index.html "loads" at zero
       // width rather than erroring, so treat that as a failure too.
       onLoad={e => { if (e.currentTarget.naturalWidth === 0) setFailed(true) }}
       loading="lazy"
-      className="w-28 h-28 rounded-full object-cover flex-shrink-0"
-      style={{ border: '3px solid #FFE4D6' }}
+      className={`${size} rounded-2xl object-cover flex-shrink-0 bg-peach-soft`}
     />
   )
 }
 
 export default function Founders() {
   return (
-    <section id="founders" className="py-28 w-full" style={{ backgroundColor: '#FFF9F6' }}>
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#FF8C61' }}>
-            Founders
-          </p>
-          <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ color: '#1C1C1C' }}>
-            Two Students, One Obsession
+    <section id="founders" aria-labelledby="founders-heading" className="w-full py-24 lg:py-32 bg-bisque">
+      <div className="page">
+        <div className="grid lg:grid-cols-12 gap-x-8 mb-14 lg:mb-20">
+          <h2 id="founders-heading" className="lg:col-span-5 font-display font-medium text-4xl sm:text-5xl leading-[1.08] mb-6 lg:mb-0 max-w-[12ch]">
+            Two students who build websites
           </h2>
-          <p className="text-base max-w-2xl mx-auto leading-relaxed" style={{ color: '#6B7280' }}>
-            We started PeachWeb because the small businesses around Atlanta deserve the same
-            quality of website the big chains pay thousands for. We kept meeting shop owners,
-            restaurants, and nonprofits doing great work behind an outdated page — or no page at
-            all. Building websites is what we genuinely love doing, so we decided to do it for
-            them, properly and affordably.
-          </p>
+          <div className="lg:col-span-6 lg:col-start-7 space-y-4 text-stone leading-relaxed max-w-[36rem]">
+            <p>
+              We kept meeting shop owners, restaurants, and nonprofits around Atlanta doing good work behind an
+              outdated page, or no page at all. A well-made site shouldn't only be for businesses that can pay
+              big-agency rates.
+            </p>
+            <p>
+              Building websites is what we like doing most, so we started PeachWeb to do it for them, properly
+              and at a price a small business can manage.
+            </p>
+          </div>
         </div>
 
-        {/* Founder cards */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-x-10 gap-y-14">
           {founders.map(f => (
-            <div
-              key={f.name}
-              className="bg-white rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-              style={{ border: '1px solid #FFE4D6', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
-            >
-              <div className="flex items-center gap-5 mb-6">
+            <article key={f.name} className="border-t border-charcoal pt-8">
+              <div className="flex items-end gap-6 mb-7">
                 <Portrait src={f.photo} initials={f.initials} name={f.name} />
-                <div className="min-w-0">
-                  <h3 className="text-xl font-black leading-tight" style={{ color: '#1C1C1C' }}>
-                    {f.name}
-                  </h3>
-                  <p className="text-sm font-semibold mb-3" style={{ color: '#FF8C61' }}>
-                    {f.role}
-                  </p>
+                <div className="min-w-0 pb-1">
+                  <h3 className="font-display font-medium text-2xl sm:text-3xl leading-tight">{f.name}</h3>
+                  <p className="text-stone mb-3">{f.role}</p>
                   <a
                     href={f.linkedin}
                     target="_blank"
                     rel="noopener"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full transition-all hover:shadow-sm"
-                    style={{ backgroundColor: '#FFF5F0', color: '#E8571A', border: '1px solid #FFE4D6' }}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-terracotta hover:text-terracotta-deep"
                   >
-                    <LinkedInIcon className="w-3.5 h-3.5" />
-                    LinkedIn
+                    <LinkedInIcon className="w-4 h-4" />
+                    LinkedIn<span className="sr-only"> profile for {f.name} (opens in a new tab)</span>
                   </a>
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed mb-6" style={{ color: '#6B7280' }}>
-                {f.bio}
-              </p>
+              <p className="leading-relaxed mb-6 max-w-[36rem]">{f.bio}</p>
 
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#9CA3AF' }}>
-                Sites Built
-              </p>
-              <ul className="flex flex-wrap gap-2">
-                {f.work.map(w => (
-                  <li
-                    key={w}
-                    className="text-xs font-medium px-3 py-1.5 rounded-full"
-                    style={{ backgroundColor: '#FFF5F0', color: '#1C1C1C', border: '1px solid #FFE4D6' }}
-                  >
-                    {w}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <h4 className="font-sans text-sm font-semibold text-charcoal mb-1">Sites built</h4>
+              <p className="text-sm text-stone leading-relaxed">{f.work.join(', ')}</p>
+            </article>
           ))}
         </div>
       </div>

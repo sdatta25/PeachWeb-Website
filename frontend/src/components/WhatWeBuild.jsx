@@ -1,104 +1,78 @@
-const services = [
+const primary = [
   {
-    title: 'Custom Websites',
-    description: 'Beautiful, fast, mobile-first websites tailored to your brand and business goals. Every pixel crafted for your audience.',
+    title: 'Custom websites',
+    description:
+      "A site designed around your business rather than a template with your logo dropped in. It covers what customers actually look for: what you offer, where you are, when you're open, and how to reach you.",
+    includes: ['Pages for your services or menu, your story, and contact details', 'Hours, location, and photos where people expect them', 'Launched by us, with a walkthrough for you'],
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
-        <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8" aria-hidden="true">
+        <rect x="2.5" y="4" width="19" height="15" rx="2" /><path d="M2.5 8.5h19M6 6.25h.01M8.5 6.25h.01" />
       </svg>
     ),
-    tag: 'Most Popular',
   },
   {
-    title: 'AI Chatbots',
-    description: 'Smart AI assistants that answer customer questions around the clock, book appointments, and capture leads automatically.',
+    title: 'AI chatbots',
+    description:
+      'An assistant on your site that answers common questions from your own information at any hour, and takes down contact details from people who want a follow-up. Peachy, in the corner of this page, is one we built for ourselves.',
+    includes: ['Set up with your hours, services, and common questions', 'Points visitors to the right page or contact form'],
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-        <rect x="3" y="3" width="18" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-        <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8" aria-hidden="true">
+        <path d="M21 14.5a2 2 0 01-2 2H8l-4.5 4V5a2 2 0 012-2H19a2 2 0 012 2z" /><path d="M8 9.5h.01M12 9.5h.01M16 9.5h.01" />
       </svg>
     ),
-    tag: 'AI-Powered',
+  },
+]
+
+const secondary = [
+  {
+    title: 'Mobile-first design',
+    description: 'Every page is laid out for a phone screen first, then adjusted for tablets and desktops.',
   },
   {
-    title: 'Mobile-First Design',
-    description: 'Every site we build looks and works perfectly on phones, tablets, and desktops — because that\'s where your customers are.',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-      </svg>
-    ),
-    tag: null,
-  },
-  {
-    title: 'Post-Launch Support',
-    description: "We don't disappear after launch. Ongoing maintenance, updates, and support so your site always runs at its best.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
-        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
-      </svg>
-    ),
-    tag: null,
+    title: 'Support after launch',
+    description: 'We handle updates and fixes after the site goes live, and show you how to make simple edits yourself.',
   },
 ]
 
 export default function WhatWeBuild() {
   return (
-    <section id="build" className="py-28 w-full" style={{ background: 'linear-gradient(180deg, #FFF8F4 0%, #FFF2EB 100%)' }}>
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#FF8C61' }}>
-            What We Build
-          </p>
-          <h2 className="text-3xl md:text-4xl font-black mb-4" style={{ color: '#1C1C1C' }}>
-            Our Services
+    <section id="build" aria-labelledby="build-heading" className="w-full py-24 lg:py-32 bg-bisque">
+      <div className="page">
+        <div className="grid lg:grid-cols-12 gap-x-8 mb-14 lg:mb-20">
+          <h2 id="build-heading" className="lg:col-span-6 font-display font-medium text-4xl sm:text-5xl leading-[1.08] mb-5 lg:mb-0">
+            What we build
           </h2>
-          <p className="text-base max-w-md mx-auto" style={{ color: '#9CA3AF' }}>
-            From your first website to an AI-powered customer experience — we build it all.
+          <p className="lg:col-span-5 lg:col-start-8 text-stone leading-relaxed self-end max-w-[32rem]">
+            Most clients come to us for a website. Some add a chatbot so routine questions get answered
+            when nobody is at the counter. You can ask for either one, or both.
           </p>
         </div>
 
-        {/* Service Cards */}
-        <div className="grid sm:grid-cols-2 gap-5">
-          {services.map((s) => (
-            <div
-              key={s.title}
-              className="group relative bg-white rounded-2xl p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-default flex gap-6"
-              style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)', border: '1px solid #FFF0E8' }}
-            >
-              {/* Icon block */}
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors duration-200 group-hover:bg-orange-100"
-                style={{ backgroundColor: '#FFF5F0', color: '#FF8C61' }}
-              >
-                {s.icon}
-              </div>
+        <div className="grid md:grid-cols-2 gap-5">
+          {primary.map(s => (
+            <article key={s.title} className="bg-ivory rounded-2xl p-7 sm:p-10 flex flex-col">
+              <div className="text-terracotta mb-8">{s.icon}</div>
+              <h3 className="font-display font-medium text-3xl mb-4">{s.title}</h3>
+              <p className="text-stone leading-relaxed mb-8 max-w-[36rem]">{s.description}</p>
+              <ul className="mt-auto border-t border-line">
+                {s.includes.map(item => (
+                  <li key={item} className="flex gap-3 py-3 border-b border-line text-[0.95rem]">
+                    <svg viewBox="0 0 16 16" className="w-4 h-4 mt-1 flex-shrink-0 text-terracotta" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                      <path d="M3 8.5l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
 
-              {/* Text */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-base font-bold" style={{ color: '#1C1C1C' }}>{s.title}</h3>
-                  {s.tag && (
-                    <span
-                      className="px-2 py-0.5 rounded-full text-xs font-bold"
-                      style={{ backgroundColor: '#FFF5F0', color: '#E8571A' }}
-                    >
-                      {s.tag}
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm leading-relaxed" style={{ color: '#6B7280' }}>{s.description}</p>
-              </div>
-
-              {/* Arrow on hover — desktop only */}
-              <div
-                className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-lg"
-                style={{ color: '#FF8C61' }}
-              >
-                →
-              </div>
+        <div className="grid md:grid-cols-2 gap-x-5 mt-12">
+          {secondary.map(s => (
+            <div key={s.title} className="py-6 border-t border-charcoal/20 md:px-2">
+              <h3 className="font-display font-medium text-xl mb-2">{s.title}</h3>
+              <p className="text-stone leading-relaxed max-w-[32rem]">{s.description}</p>
             </div>
           ))}
         </div>

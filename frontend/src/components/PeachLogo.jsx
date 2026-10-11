@@ -7,7 +7,7 @@ export function PeachIcon({ size = 40, uid = '0' }) {
   const h = Math.round(size * 1.15)
 
   return (
-    <svg width={size} height={h} viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={h} viewBox="0 0 100 115" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={gId} cx="38%" cy="30%" r="70%" gradientUnits="objectBoundingBox">
           <stop offset="0%"   stopColor="#F5AC6A" />
@@ -63,7 +63,7 @@ export function PeachIcon({ size = 40, uid = '0' }) {
 }
 
 // Full horizontal logo: peach icon + "PeachWeb" serif text
-export function PeachLogoFull({ iconSize = 36, textColor = '#C44312', className = '' }) {
+export function PeachLogoFull({ iconSize = 36, textColor = '#A3431D', className = '' }) {
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <PeachIcon size={iconSize} uid="logo" />

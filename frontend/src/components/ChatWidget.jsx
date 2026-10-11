@@ -6,7 +6,7 @@ import { API_URL } from '../lib/api'
 function makeGreeting() {
   return {
     role: 'assistant',
-    content: "Hi there! 👋 I'm Peachy, PeachWeb's AI assistant. I can tell you all about our services, how we work, and how we can help your business. What would you like to know?",
+    content: "Hi, I'm Peachy, PeachWeb's assistant. Ask me what we build, how a project works, or how to get started.",
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
   }
 }
@@ -18,18 +18,18 @@ function TypingIndicator() {
     <div className="flex items-end gap-2 mb-3">
       <div
         className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-        style={{ backgroundColor: '#FFE4D6' }}
+        style={{ backgroundColor: '#F8DDC9' }}
       >
         <PeachIcon size={24} uid="typing" />
       </div>
-      <div className="px-4 py-3 rounded-tr-2xl rounded-tl-sm rounded-br-2xl" style={{ backgroundColor: '#F3F4F6' }}>
+      <div className="px-4 py-3 rounded-tr-2xl rounded-tl-sm rounded-br-2xl" style={{ backgroundColor: '#F3E6D8' }}>
         <div className="flex gap-1 items-center h-4">
           {[0, 1, 2].map(i => (
             <div
               key={i}
               className="w-2 h-2 rounded-full"
               style={{
-                backgroundColor: '#9CA3AF',
+                backgroundColor: '#685B51',
                 animation: 'bounce 1.2s infinite',
                 animationDelay: `${i * 0.2}s`,
               }}
@@ -116,7 +116,7 @@ export default function ChatWidget() {
         ...prev,
         {
           role: 'assistant',
-          content: "Sorry, I'm having trouble connecting. Please email us at peachwebdevelopment@gmail.com",
+          content: "I couldn't connect just now. You can reach the team at peachwebdevelopment@gmail.com.",
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isError: true,
         },
@@ -138,7 +138,7 @@ export default function ChatWidget() {
       ...prev,
       {
         role: 'assistant',
-        content: "Great chatting with you! 😊 Feel free to come back anytime. You can also click \"Request a Website\" to get started with PeachWeb.",
+        content: "Thanks for stopping by. When you're ready, use \"Request a website\" at the top of the page, or email peachwebdevelopment@gmail.com.",
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ])
@@ -158,10 +158,6 @@ export default function ChatWidget() {
           0%, 60%, 100% { transform: translateY(0); }
           30% { transform: translateY(-6px); }
         }
-        @keyframes chat-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255, 140, 97, 0.4); }
-          50% { box-shadow: 0 0 0 10px rgba(255, 140, 97, 0); }
-        }
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -172,26 +168,28 @@ export default function ChatWidget() {
       {/* Chat Window */}
       {open && (
         <div
-          className="fixed bottom-24 right-2.5 md:right-5 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden"
+          role="dialog"
+          aria-label="Chat with Peachy, PeachWeb's assistant"
+          className="fixed bottom-24 right-2.5 md:right-5 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-line"
           style={{ width: 'min(380px, calc(100vw - 20px))', height: 'min(520px, calc(100dvh - 120px))', backgroundColor: 'white' }}
         >
           {/* Header */}
           <div
             className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
-            style={{ backgroundColor: '#1C1C1C' }}
+            style={{ backgroundColor: '#241D19' }}
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-              style={{ backgroundColor: '#FFE4D6' }}
+              style={{ backgroundColor: '#F8DDC9' }}
             >
               <PeachIcon size={28} uid="header" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-bold text-white leading-tight">Peachy</p>
-                <span className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span>
+                <span className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" aria-hidden="true"></span>
               </div>
-              <p className="text-xs" style={{ color: '#9CA3AF' }}>PeachWeb AI Assistant</p>
+              <p className="text-xs" style={{ color: '#9CA3AF' }}>PeachWeb assistant</p>
             </div>
 
             {/* New Chat button */}
@@ -226,7 +224,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 chat-messages" style={{ backgroundColor: '#FAFAFA' }}>
+          <div className="flex-1 overflow-y-auto p-4 chat-messages" aria-live="polite" style={{ backgroundColor: '#FBF7F1' }}>
             {messages.map((msg, i) => (
               <div
                 key={i}
@@ -235,7 +233,7 @@ export default function ChatWidget() {
                 {msg.role === 'assistant' && (
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-                    style={{ backgroundColor: '#FFE4D6' }}
+                    style={{ backgroundColor: '#F8DDC9' }}
                   >
                     <PeachIcon size={24} uid={`msg-${i}`} />
                   </div>
@@ -249,13 +247,13 @@ export default function ChatWidget() {
                     }`}
                     style={
                       msg.role === 'user'
-                        ? { backgroundColor: '#FF8C61' }
-                        : { backgroundColor: '#F3F4F6', color: msg.isError ? '#DC2626' : '#1C1C1C' }
+                        ? { backgroundColor: '#A3431D' }
+                        : { backgroundColor: '#F3E6D8', color: msg.isError ? '#B91C1C' : '#241D19' }
                     }
                   >
                     {msg.content}
                   </div>
-                  <p className="text-xs mt-1 px-1" style={{ color: '#9CA3AF' }}>{msg.time}</p>
+                  <p className="text-xs mt-1 px-1" style={{ color: '#685B51' }}>{msg.time}</p>
                 </div>
               </div>
             ))}
@@ -271,7 +269,7 @@ export default function ChatWidget() {
                     key={s}
                     onClick={() => sendMessage(s)}
                     className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                    style={{ borderColor: '#FFE4D6', color: '#E8571A', backgroundColor: '#FFF5F0' }}
+                    style={{ borderColor: '#E5D7C7', color: '#A3431D', backgroundColor: '#ffffff' }}
                   >
                     {s}
                   </button>
@@ -285,14 +283,14 @@ export default function ChatWidget() {
                 <button
                   onClick={handleTellMeMore}
                   className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                  style={{ borderColor: '#FFE4D6', color: '#E8571A', backgroundColor: '#FFF5F0' }}
+                  style={{ borderColor: '#E5D7C7', color: '#A3431D', backgroundColor: '#ffffff' }}
                 >
                   Tell me more
                 </button>
                 <button
                   onClick={handleThatsAll}
                   className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                  style={{ borderColor: '#E5E7EB', color: '#6B7280', backgroundColor: '#F9FAFB' }}
+                  style={{ borderColor: '#E5D7C7', color: '#685B51', backgroundColor: '#FBF7F1' }}
                 >
                   That's all, thanks
                 </button>
@@ -305,13 +303,13 @@ export default function ChatWidget() {
                 <button
                   onClick={startNewChat}
                   className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white transition-all hover:opacity-90 hover:shadow-md"
-                  style={{ backgroundColor: '#FF8C61' }}
+                  style={{ backgroundColor: '#A3431D' }}
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
-                  Start a New Chat
+                  Start a new chat
                 </button>
               </div>
             )}
@@ -322,7 +320,7 @@ export default function ChatWidget() {
           {/* Input Area */}
           <div
             className="flex items-center gap-2 px-3 py-3 border-t flex-shrink-0"
-            style={{ borderColor: '#FFE4D6', backgroundColor: 'white' }}
+            style={{ borderColor: '#E5D7C7', backgroundColor: 'white' }}
           >
             <input
               ref={inputRef}
@@ -330,18 +328,19 @@ export default function ChatWidget() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
+              placeholder="Ask a question"
+              aria-label="Message Peachy"
               disabled={loading}
               className="flex-1 px-4 py-2.5 rounded-full text-sm outline-none border transition-colors disabled:opacity-60"
-              style={{ borderColor: '#E5E7EB', backgroundColor: '#FAFAFA' }}
-              onFocus={e => e.target.style.borderColor = '#FF8C61'}
-              onBlur={e => e.target.style.borderColor = '#E5E7EB'}
+              style={{ borderColor: '#E5D7C7', backgroundColor: '#FBF7F1' }}
+              onFocus={e => e.target.style.borderColor = '#A3431D'}
+              onBlur={e => e.target.style.borderColor = '#E5D7C7'}
             />
             <button
               onClick={() => sendMessage()}
               disabled={loading || !input.trim()}
               className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
-              style={{ backgroundColor: '#FF8C61' }}
+              style={{ backgroundColor: '#A3431D' }}
               aria-label="Send"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,12 +356,12 @@ export default function ChatWidget() {
         onClick={() => setOpen(o => !o)}
         className="fixed bottom-5 right-2.5 md:right-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95"
         style={{
-          backgroundColor: open ? '#FF8C61' : '#ffffff',
-          border: open ? 'none' : '2px solid #FFE4D6',
+          backgroundColor: open ? '#A3431D' : '#ffffff',
+          border: open ? 'none' : '1px solid #E5D7C7',
           color: 'white',
-          animation: open ? 'none' : 'chat-pulse 2.5s infinite',
         }}
-        aria-label={open ? 'Close chat' : 'Open chat'}
+        aria-label={open ? 'Close chat' : 'Chat with Peachy'}
+        aria-expanded={open}
       >
         {open ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

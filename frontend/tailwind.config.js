@@ -3,10 +3,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        peach: { 50: '#FFF5F0', 100: '#FFE4D6', 200: '#FFCAB0', 300: '#FFAB76', 400: '#FF8C61', 500: '#FF6B35', 600: '#E8571A', 700: '#C44312' },
-        dark: '#1C1C1C'
+        ivory: '#FBF7F1',
+        bisque: '#F3E6D8',
+        peach: { DEFAULT: '#EFA77E', soft: '#F8DDC9' },
+        terracotta: { DEFAULT: '#A3431D', deep: '#7F3214' },
+        charcoal: '#241D19',
+        stone: '#685B51',
+        line: '#E5D7C7',
+        mist: '#C9BBAE',
       },
-      fontFamily: { sans: ['Inter', 'sans-serif'] }
+      fontFamily: {
+        sans: ['Figtree', 'system-ui', 'sans-serif'],
+        display: ['Fraunces', 'Georgia', 'serif'],
+      },
+      maxWidth: { page: '76rem' },
     }
   },
   plugins: []
