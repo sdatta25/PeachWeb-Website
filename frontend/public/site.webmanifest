@@ -1,0 +1,13 @@
+{
+  "name": "PeachWeb",
+  "short_name": "PeachWeb",
+  "description": "Websites and AI chatbots for local businesses and nonprofits around Atlanta.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#FBF7F1",
+  "theme_color": "#FBF7F1",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
