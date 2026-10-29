@@ -54,9 +54,10 @@ All of these live in `frontend/src/content/site.js` unless noted.
   booking +0.5; rounded down) is a guess to tune.
 - **What the free mockup includes** (FAQ "What is the free mockup?"). Written as "a first
   design of your homepage". Confirm that's the offer.
-- **Before/after slider** uses PeachWeb's own old and new homepage, because no client "before"
-  screenshots exist. Swap in a client's old site (`public/work/peachweb-before.webp` /
-  `-after.webp` and the copy in `components/BeforeAfter.jsx`) when you have one.
+- **Before/after slider**: "before" is a made-up "Joe's Plumbing & More" do-it-yourself site
+  (an illustration, captioned as such) and "after" is our own homepage. Swap in a real client's
+  old and new site when you have one (`public/work/example-before.webp`, `peachweb-after.webp`
+  and the copy in `components/BeforeAfter.jsx`).
 - **Chatbot demo** is a scripted conversation for a fictional "Fern & Flour Bakery" and is
   labelled as a demo in the UI.
 - **Project one-liners** were written from what each live site says about itself (e.g.

@@ -18,6 +18,7 @@ export default {
       fontFamily: {
         sans: ['"Instrument Sans Variable"', 'system-ui', 'sans-serif'],
         display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        hero: ['"Times New Roman"', 'Times', 'serif'],
       },
       // Type scale. Display sizes are fluid between 360px and 1440px.
       fontSize: {

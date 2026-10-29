@@ -9,11 +9,11 @@ export default function BeforeAfter() {
     <div className="grid-12 mt-32 items-center gap-y-8 border-t border-line pt-16 sm:mt-48 lg:pt-24">
       <div className="reveal col-span-4 sm:col-span-8 lg:col-span-4">
         <p className="mb-2 text-sm text-muted">Before and after</p>
-        <h3 className="mb-4 text-h3">Our own site</h3>
+        <h3 className="mb-4 text-h3">From cluttered to clear</h3>
         <p className="max-w-prose text-muted">
-          The left side is the PeachWeb homepage before this redesign. It looked tidy, but our real work was hidden
-          in a list of names. The new one puts screenshots of every site up front. Drag the handle
-          to compare.
+          On the left is the kind of do-it-yourself site a lot of local businesses are stuck with: cluttered, hard to
+          read, and the phone number buried halfway down. On the right is a site we designed. Drag the handle to
+          compare.
         </p>
       </div>
 
@@ -21,13 +21,13 @@ export default function BeforeAfter() {
         <div className="frame relative select-none">
           <img
             src="/work/peachweb-after.webp"
-            alt="The redesigned PeachWeb homepage"
+            alt="The PeachWeb homepage, designed by us"
             width="1280" height="800" loading="lazy" decoding="async"
             className="block h-auto w-full"
           />
           <img
-            src="/work/peachweb-before.webp"
-            alt="The previous PeachWeb homepage"
+            src="/work/example-before.webp"
+            alt="A made-up example of a cluttered do-it-yourself small-business website"
             width="1280" height="800" loading="lazy" decoding="async"
             className="absolute inset-0 block h-full w-full"
             style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}
@@ -40,8 +40,8 @@ export default function BeforeAfter() {
             type="range" min="0" max="100" step="1"
             value={pos}
             onChange={e => setPos(+e.target.value)}
-            aria-label="Compare the old and new PeachWeb homepage"
-            aria-valuetext={`${pos}% old site`}
+            aria-label="Compare a cluttered example site with a site we designed"
+            aria-valuetext={`${pos}% example site`}
             className="ba-input absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
             style={{ touchAction: 'pan-y' }}
           />
@@ -53,7 +53,9 @@ export default function BeforeAfter() {
             </span>
           </div>
         </div>
-        <figcaption className="mt-4 text-sm text-muted">Screenshots at 1440px wide.</figcaption>
+        <figcaption className="mt-4 text-sm text-muted">
+          "Before" is an illustration of a made-up business, not a real site. "After" is our own homepage.
+        </figcaption>
       </figure>
     </div>
   )

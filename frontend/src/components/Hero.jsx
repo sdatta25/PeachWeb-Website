@@ -7,8 +7,8 @@ export default function Hero({ onMockup }) {
       <div className="page grid-12 items-center gap-y-12">
         <div className="col-span-4 sm:col-span-12 lg:col-span-6">
           <p className="label mb-6">Web studio · {LOCATION}</p>
-          <h1 id="hero-heading" className="mb-6 max-w-[11ch] text-h1">
-            A website that gets your phone <em className="text-burnt">ringing.</em>
+          <h1 id="hero-heading" className="mb-6 max-w-[11ch] font-hero text-h1 text-black">
+            A website that gets your phone ringing.
           </h1>
           <p className="mb-10 max-w-prose text-lg text-muted">
             We design and build websites and AI chatbots that bring local businesses and nonprofits more calls,
