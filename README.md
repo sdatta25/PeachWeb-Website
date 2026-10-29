@@ -5,9 +5,8 @@ A professional web development company website that builds custom websites and A
 ## Project Overview
 
 PeachWeb is a full-stack website with:
-- **React + Vite + Tailwind CSS** frontend (port 5174)
+- **React + Vite + Tailwind CSS** frontend (port 5174), self-hosted Instrument Serif / Instrument Sans
 - **Node.js + Express** backend (port 3002)
-- **SQLite** database (via better-sqlite3) for storing inquiries
 - **Nodemailer** for email notifications and auto-replies
 - **Anthropic Claude** AI chatbot ("Peachy")
 
@@ -113,33 +112,42 @@ curl -X PATCH -H "x-admin-key: $ADMIN_KEY" \
 ```
 PeachWeb/
 ├── backend/
-│   ├── server.js         # Express API server
-│   ├── package.json
-│   ├── .env.example      # Copy to .env and fill in secrets
-│   └── peachweb.db       # Auto-created SQLite database
+│   ├── server.js            # Express API: inquiries (email via relay) and the Peachy chatbot
+│   └── .env.example
 ├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   ├── index.css
-│   │   └── components/
-│   │       ├── Navbar.jsx
-│   │       ├── Hero.jsx
-│   │       ├── WhySection.jsx
-│   │       ├── WhatWeBuild.jsx
-│   │       ├── HowItWorks.jsx
-│   │       ├── ContactSection.jsx
-│   │       ├── RequestModal.jsx
-│   │       ├── ChatWidget.jsx
-│   │       └── Footer.jsx
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── package.json
-└── README.md
+│   ├── index.html           # SEO meta, Open Graph, JSON-LD, Search Console verification
+│   ├── 404.html             # Custom 404 (Vercel serves it for unknown paths)
+│   ├── api/send-email.js    # Vercel Function mail relay used by the backend
+│   ├── public/
+│   │   ├── work/            # Screenshots of the live portfolio sites (WebP)
+│   │   ├── founders/        # Founder portraits
+│   │   └── sitemap.xml, robots.txt, og-image.png, site.webmanifest
+│   └── src/
+│       ├── content/site.js  # ALL copy and data: projects, services, pricing, FAQ, estimator
+│       ├── index.css        # Brand tokens (CSS variables), type, components
+│       ├── lib/             # API URL, form submission, scroll-reveal hook
+│       └── components/      # One file per section, in page order:
+│           Nav, Hero, Work (+BeforeAfter), Services (+ChatDemo), Process,
+│           Team, Pricing (+QuoteEstimator), Faq, FinalCta, Footer,
+│           MockupModal, ChatWidget (Peachy)
+└── docs/redesign-audit.md   # Design audit and the placeholders still to fill
 ```
 
----
+## Editing content
+
+Change text, prices, projects, and FAQ answers in `frontend/src/content/site.js`; no layout
+code needs to change. Pricing tiers with `price: null` show "Quoted after a call" on the live
+site and a dark "PLACEHOLDER" tag in `npm run dev`.
+
+To add a portfolio project, add an entry to `projects` and put three screenshots in
+`frontend/public/work/`: `<slug>-1280.webp` and `<slug>-720.webp` (16:10 desktop) and
+`<slug>-mobile.webp` (390x844).
+
+## Forms
+
+The "Get a free mockup" form and the quote estimator both POST to the backend's
+`/api/inquiries`, which emails peachwebdevelopment@gmail.com and sends the visitor a
+confirmation. Nothing extra to configure as long as the backend's email settings stay in place.
 
 ## API Endpoints
 
