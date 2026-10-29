@@ -11,8 +11,8 @@ export default function BeforeAfter() {
         <p className="mb-2 text-sm text-muted">Before and after</p>
         <h3 className="mb-4 text-h3">Our own site</h3>
         <p className="max-w-prose text-muted">
-          The left side is the PeachWeb homepage before this redesign. It looked tidy, but it led with a made-up
-          sample bakery and hid our real work in a list of names. The new one leads with the work. Drag the handle
+          The left side is the PeachWeb homepage before this redesign. It looked tidy, but our real work was hidden
+          in a list of names. The new one puts screenshots of every site up front. Drag the handle
           to compare.
         </p>
       </div>

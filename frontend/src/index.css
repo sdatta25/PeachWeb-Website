@@ -92,3 +92,55 @@
 /* Process timeline fill: scaled by --p (0 to 1) along whichever axis the track runs. */
 .tl-fill { transform: scaleY(var(--p)); }
 @media (min-width: 1024px) { .tl-fill { transform: scaleX(var(--p)); } }
+
+/* ---- Hero website-preview demo ---- */
+.pv-frame {
+  background: #fff;
+  border: 1px solid #F1C9AE;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgb(var(--dark) / 0.06), 0 24px 48px -24px rgb(var(--dark) / 0.28);
+}
+.pv-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #FFF7F0; border-bottom: 1px solid #F1C9AE; }
+.pv-dot { width: 9px; height: 9px; border-radius: 50%; background: #F1C9AE; }
+.pv-url { flex: 1; margin-left: 8px; padding: 4px 12px; border-radius: 6px; background: #FBF7F1; color: #6F5443; font-size: 12px; }
+
+/* Everything inside the stage is sized in cqw, so it scales like a screenshot. */
+.pv-stage { position: relative; container-type: inline-size; aspect-ratio: 4 / 3.1; background: #FBF7F1; overflow: hidden; font-family: 'Instrument Sans Variable', system-ui, sans-serif; color: #3B2A20; }
+.pv-nav { display: flex; align-items: center; justify-content: space-between; padding: 3cqw 5cqw; border-bottom: 1px solid #F1C9AE; font-size: 2.7cqw; }
+.pv-logo { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 3.4cqw; color: #C1440E; }
+.pv-links { display: flex; align-items: center; gap: 4cqw; color: #6F5443; }
+.pv-navbtn { padding: 1.1cqw 2.6cqw; border-radius: 1.2cqw; background: #FFE3D1; color: #3B2A20; font-weight: 600; transition: transform .12s, background-color .2s; }
+
+.pv-scene { padding: 6cqw 5cqw 0; display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn .4s ease both; }
+.pv-kicker { font-size: 2.5cqw; color: #6F5443; margin: 0 0 2cqw; }
+.pv-h { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: 7.4cqw; line-height: 1.06; margin: 0 0 2.4cqw; max-width: 22ch; letter-spacing: -0.015em; }
+.pv-h-sm { font-size: 5cqw; margin-bottom: 3cqw; }
+.pv-sub { font-size: 2.8cqw; color: #6F5443; margin: 0 0 4cqw; }
+.pv-btn { display: inline-block; padding: 2cqw 4.4cqw; border-radius: 1.4cqw; background: #C1440E; color: #FBF7F1; font-size: 2.8cqw; font-weight: 600; transition: transform .12s, filter .12s; }
+
+.pv-menu { align-items: stretch; }
+.pv-row { display: flex; align-items: center; gap: 3cqw; padding: 2.4cqw 0; border-top: 1px solid #F1C9AE; }
+.pv-thumb { width: 9cqw; height: 9cqw; border-radius: 1.6cqw; background: linear-gradient(140deg, #FFE3D1, #E57A34); flex: none; }
+.pv-rowtext { flex: 1; display: flex; flex-direction: column; font-size: 2.8cqw; }
+.pv-rowtext i { font-style: normal; color: #6F5443; font-size: 2.4cqw; }
+.pv-add { padding: 1.3cqw 3.2cqw; border-radius: 1.2cqw; border: 1px solid #3B2A20; font-size: 2.5cqw; font-weight: 600; transition: transform .12s, background-color .2s, color .2s; }
+.pv-add-idle { opacity: .75; }
+.pv-added { background: #C1440E; border-color: #C1440E; color: #FBF7F1; }
+
+.pv-order { align-items: stretch; }
+.pv-label { font-size: 2.4cqw; font-weight: 600; margin-bottom: 1.2cqw; }
+.pv-field { display: flex; align-items: center; min-height: 7.6cqw; padding: 0 2.4cqw; margin-bottom: 4cqw; border: 1px solid #F1C9AE; border-radius: 1.4cqw; background: #fff; font-size: 2.9cqw; transition: border-color .15s, box-shadow .15s; }
+.pv-focus { border-color: #C1440E; box-shadow: 0 0 0 .6cqw rgba(229, 122, 52, 0.35); }
+.pv-caret { width: 1px; height: 3.4cqw; margin-left: 2px; background: #3B2A20; animation: pvCaret 1s steps(1) infinite; }
+.pv-done { padding: 2.4cqw 3cqw; border-radius: 1.4cqw; background: #FFE3D1; font-size: 2.9cqw; font-weight: 600; animation: fadeIn .35s ease both; align-self: flex-start; }
+.pv-order .pv-btn { align-self: flex-start; }
+
+.pv-pressed { transform: scale(.94); filter: brightness(.94); }
+
+.pv-cursor { position: absolute; left: 0; top: 0; width: 4.6cqw; height: 4.6cqw; margin: -.6cqw 0 0 -.9cqw; pointer-events: none; z-index: 5; transition: transform .9s cubic-bezier(.45, .05, .2, 1); filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+.pv-ripple { position: absolute; left: .6cqw; top: .6cqw; width: 5cqw; height: 5cqw; margin: -2.5cqw 0 0 -2.5cqw; border-radius: 50%; border: .5cqw solid #C1440E; opacity: 0; animation: pvRipple .55s ease-out; }
+
+@keyframes pvRipple { from { transform: scale(.2); opacity: .8; } to { transform: scale(1.3); opacity: 0; } }
+@keyframes pvCaret { 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

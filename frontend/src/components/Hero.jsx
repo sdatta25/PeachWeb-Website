@@ -1,4 +1,4 @@
-import BrowserFrame, { Screenshot } from './BrowserFrame'
+import HeroPreview from './HeroPreview'
 import { LOCATION } from '../content/site'
 
 export default function Hero({ onMockup }) {
@@ -20,21 +20,14 @@ export default function Hero({ onMockup }) {
           </div>
         </div>
 
-        {/* A real site we built. Bleeds past the column on large screens for an editorial feel. */}
+        {/* A scripted demo of a visitor using a sample small-business site. Decorative, so it is
+            hidden from assistive tech and ignores pointer input. */}
         <figure className="col-span-4 sm:col-span-12 lg:col-span-6 min-[1400px]:-mr-20">
-          <BrowserFrame url="https://financeformovement.org">
-            <Screenshot
-              slug="finance-for-movement"
-              alt="Homepage of financeformovement.org, a nonprofit site built by PeachWeb"
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              eager
-            />
-          </BrowserFrame>
+          <div aria-hidden="true" className="pointer-events-none">
+            <HeroPreview />
+          </div>
           <figcaption className="mt-4 text-sm text-muted">
-            Finance For Movement, a youth-led nonprofit.{' '}
-            <a href="https://financeformovement.org" target="_blank" rel="noopener" className="link text-dark">
-              Visit the live site<span className="sr-only"> (opens in a new tab)</span>
-            </a>
+            A sample site concept, not a real client. <a href="#work" className="link text-dark">See sites we've built</a>
           </figcaption>
         </figure>
       </div>
