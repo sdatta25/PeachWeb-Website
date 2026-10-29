@@ -13,8 +13,8 @@ export const socials = [
 export const nav = [
   { label: 'Work', href: '#work' },
   { label: 'Services', href: '#services' },
-  { label: 'Team', href: '#team' },
   { label: 'Pricing', href: '#pricing' },
+  { label: 'Team', href: '#team' },
 ]
 
 // Live sites built by the founders. Screenshots are captured from the live URLs

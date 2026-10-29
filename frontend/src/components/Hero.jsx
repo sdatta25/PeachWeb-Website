@@ -1,13 +1,11 @@
 import HeroPreview from './HeroPreview'
-import { LOCATION } from '../content/site'
 
 export default function Hero({ onMockup }) {
   return (
-    <section id="top" aria-labelledby="hero-heading" className="pb-16 pt-12 sm:pb-24 sm:pt-16 lg:pb-32 lg:pt-20">
+    <section id="top" aria-labelledby="hero-heading" className="pb-16 pt-8 sm:pb-24 sm:pt-12 lg:pb-32 lg:pt-12">
       <div className="page grid-12 items-center gap-y-12">
         <div className="col-span-4 sm:col-span-12 lg:col-span-6">
-          <p className="label mb-6">Web studio · {LOCATION}</p>
-          <h1 id="hero-heading" className="mb-6 max-w-[11ch] font-hero text-h1 text-black">
+          <h1 id="hero-heading" className="mb-6 max-w-[12ch] font-hero text-hero text-black">
             A website that gets your phone ringing.
           </h1>
           <p className="mb-10 max-w-prose text-lg text-muted">

@@ -24,7 +24,7 @@ function Portrait({ f }) {
 
 export default function Team() {
   return (
-    <section id="team" aria-labelledby="team-heading" className="py-16 sm:py-24 lg:py-32">
+    <section id="team" aria-labelledby="team-heading" className="bg-cream py-16 sm:py-24 lg:py-32">
       <div className="page grid-12 gap-y-16">
         <div className="col-span-4 sm:col-span-12 lg:col-span-5">
           <div className="lg:sticky lg:top-[calc(var(--nav-h)+4rem)]">

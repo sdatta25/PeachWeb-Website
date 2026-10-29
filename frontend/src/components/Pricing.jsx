@@ -3,7 +3,7 @@ import { pricing } from '../content/site'
 
 export default function Pricing() {
   return (
-    <section id="pricing" aria-labelledby="pricing-heading" className="bg-cream py-16 sm:py-24 lg:py-32">
+    <section id="pricing" aria-labelledby="pricing-heading" className="py-16 sm:py-24 lg:py-32">
       <div className="page grid-12 gap-y-16">
         <div className="col-span-4 sm:col-span-12 lg:col-span-5">
           <h2 id="pricing-heading" className="reveal mb-6 text-h2">Pricing</h2>

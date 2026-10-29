@@ -18,7 +18,7 @@ export default {
       fontFamily: {
         sans: ['"Instrument Sans Variable"', 'system-ui', 'sans-serif'],
         display: ['"Instrument Serif"', 'Georgia', 'serif'],
-        hero: ['"Times New Roman"', 'Times', 'serif'],
+        hero: ['"Instrument Sans Variable"', 'system-ui', 'sans-serif'],
       },
       // Type scale. Display sizes are fluid between 360px and 1440px.
       fontSize: {
@@ -29,6 +29,8 @@ export default {
         xl: ['1.375rem', { lineHeight: '1.35' }],      // 22
         h3: ['clamp(1.625rem, 1.2rem + 1vw, 2rem)', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
         h2: ['clamp(2.5rem, 1.6rem + 3.4vw, 4.5rem)', { lineHeight: '0.98', letterSpacing: '-0.02em' }],
+        // The hero headline is set in the sans at semibold, so it runs a little smaller and tighter.
+        hero: ['clamp(2.75rem, 1.5rem + 4.8vw, 5.5rem)', { lineHeight: '0.98', letterSpacing: '-0.035em', fontWeight: '600' }],
         h1: ['clamp(3rem, 1.6rem + 5.6vw, 6.5rem)', { lineHeight: '0.94', letterSpacing: '-0.025em' }],
       },
       maxWidth: { page: '80rem', prose: '36rem' },

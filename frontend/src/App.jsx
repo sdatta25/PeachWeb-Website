@@ -41,9 +41,9 @@ export default function App() {
         <Hero onMockup={open} />
         <Work />
         <Services />
+        <Pricing />
         <Process />
         <Team />
-        <Pricing />
         <Faq />
         <FinalCta onMockup={open} />
       </main>
