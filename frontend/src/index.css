@@ -82,3 +82,61 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---- Hero website-preview demo ---- */
+.pv-frame {
+  background: #fff;
+  border: 1px solid #E5D7C7;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -32px rgba(36, 29, 25, 0.4);
+}
+.pv-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #F3E6D8; border-bottom: 1px solid #E5D7C7; }
+.pv-dot { width: 9px; height: 9px; border-radius: 50%; background: #C9BBAE; }
+.pv-url { flex: 1; margin-left: 8px; padding: 4px 12px; border-radius: 6px; background: #FBF7F1; color: #685B51; font-size: 12px; }
+
+/* Everything inside the stage is sized in cqw, so it scales like a screenshot. */
+.pv-stage { position: relative; container-type: inline-size; aspect-ratio: 4 / 3.1; background: #FBF7F1; overflow: hidden; font-family: 'Figtree', system-ui, sans-serif; color: #241D19; }
+.pv-nav { display: flex; align-items: center; justify-content: space-between; padding: 3cqw 5cqw; border-bottom: 1px solid #E5D7C7; font-size: 2.7cqw; }
+.pv-logo { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 3.4cqw; color: #A3431D; }
+.pv-links { display: flex; align-items: center; gap: 4cqw; color: #685B51; }
+.pv-navbtn { padding: 1.1cqw 2.6cqw; border-radius: 1.2cqw; background: #F8DDC9; color: #241D19; font-weight: 600; transition: transform .12s, background-color .2s; }
+
+.pv-scene { padding: 6cqw 5cqw 0; display: flex; flex-direction: column; align-items: flex-start; animation: fadeIn .4s ease both; }
+.pv-kicker { font-size: 2.5cqw; color: #685B51; margin: 0 0 2cqw; }
+.pv-h { font-family: 'Fraunces', Georgia, serif; font-weight: 500; font-size: 7.4cqw; line-height: 1.06; margin: 0 0 2.4cqw; max-width: 22ch; letter-spacing: -0.015em; }
+.pv-h-sm { font-size: 5cqw; margin-bottom: 3cqw; }
+.pv-sub { font-size: 2.8cqw; color: #685B51; margin: 0 0 4cqw; }
+.pv-btn { display: inline-block; padding: 2cqw 4.4cqw; border-radius: 1.4cqw; background: #A3431D; color: #FBF7F1; font-size: 2.8cqw; font-weight: 600; transition: transform .12s, filter .12s; }
+
+.pv-menu { align-items: stretch; }
+.pv-row { display: flex; align-items: center; gap: 3cqw; padding: 2.4cqw 0; border-top: 1px solid #E5D7C7; }
+.pv-thumb { width: 9cqw; height: 9cqw; border-radius: 1.6cqw; background: linear-gradient(140deg, #F8DDC9, #EFA77E); flex: none; }
+.pv-rowtext { flex: 1; display: flex; flex-direction: column; font-size: 2.8cqw; }
+.pv-rowtext i { font-style: normal; color: #685B51; font-size: 2.4cqw; }
+.pv-add { padding: 1.3cqw 3.2cqw; border-radius: 1.2cqw; border: 1px solid #241D19; font-size: 2.5cqw; font-weight: 600; transition: transform .12s, background-color .2s, color .2s; }
+.pv-add-idle { opacity: .45; }
+.pv-added { background: #A3431D; border-color: #A3431D; color: #FBF7F1; }
+
+.pv-order { align-items: stretch; }
+.pv-label { font-size: 2.4cqw; font-weight: 600; margin-bottom: 1.2cqw; }
+.pv-field { display: flex; align-items: center; min-height: 7.6cqw; padding: 0 2.4cqw; margin-bottom: 4cqw; border: 1px solid #C9BBAE; border-radius: 1.4cqw; background: #fff; font-size: 2.9cqw; transition: border-color .15s, box-shadow .15s; }
+.pv-focus { border-color: #A3431D; box-shadow: 0 0 0 .6cqw rgba(239, 167, 126, 0.45); }
+.pv-caret { width: 1px; height: 3.4cqw; margin-left: 2px; background: #241D19; animation: pvCaret 1s steps(1) infinite; }
+.pv-done { padding: 2.4cqw 3cqw; border-radius: 1.4cqw; background: #F8DDC9; font-size: 2.9cqw; font-weight: 600; animation: fadeIn .35s ease both; align-self: flex-start; }
+.pv-order .pv-btn { align-self: flex-start; }
+
+.pv-pressed { transform: scale(.94); filter: brightness(.94); }
+
+.pv-cursor { position: absolute; left: 0; top: 0; width: 4.6cqw; height: 4.6cqw; margin: -.6cqw 0 0 -.9cqw; pointer-events: none; z-index: 5; transition: transform .9s cubic-bezier(.45, .05, .2, 1); filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+.pv-ripple { position: absolute; left: .6cqw; top: .6cqw; width: 5cqw; height: 5cqw; margin: -2.5cqw 0 0 -2.5cqw; border-radius: 50%; border: .5cqw solid #A3431D; opacity: 0; animation: pvRipple .55s ease-out; }
+
+@keyframes pvRipple { from { transform: scale(.2); opacity: .8; } to { transform: scale(1.3); opacity: 0; } }
+@keyframes pvCaret { 50% { opacity: 0; } }
+
+@media (min-width: 1280px) {
+  .pv-fade-left {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%);
+    mask-image: linear-gradient(90deg, transparent, #000 14%);
+  }
+}
