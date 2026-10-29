@@ -51,13 +51,13 @@ export default function Navbar({ onRequest }) {
           <PeachLogoFull iconSize={32} />
         </a>
 
-        <ul className="hidden lg:flex items-center gap-7">
+        <ul className="hidden lg:flex items-center gap-5 xl:gap-7">
           {links.map(link => (
             <li key={link.href}>
               <a
                 href={link.href}
                 aria-current={active === link.href ? 'true' : undefined}
-                className={`relative py-2 text-[0.92rem] font-medium transition-colors hover:text-charcoal
+                className={`relative py-2 text-[0.92rem] font-medium whitespace-nowrap transition-colors hover:text-charcoal
                   after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-terracotta
                   after:origin-left after:transition-transform after:duration-200
                   ${active === link.href ? 'text-charcoal after:scale-x-100' : 'text-stone after:scale-x-0 hover:after:scale-x-100'}`}
