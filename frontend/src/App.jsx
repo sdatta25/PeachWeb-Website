@@ -1,39 +1,55 @@
-import { useState } from 'react'
-import Navbar from './components/Navbar'
+import { useEffect, useState } from 'react'
+import Nav from './components/Nav'
 import Hero from './components/Hero'
-import WhySection from './components/WhySection'
-import WhatWeBuild from './components/WhatWeBuild'
-import HowItWorks from './components/HowItWorks'
-import Founders from './components/Founders'
-import Portfolio from './components/Portfolio'
-import ContactSection from './components/ContactSection'
+import Work from './components/Work'
+import Services from './components/Services'
+import Process from './components/Process'
+import Team from './components/Team'
+import Pricing from './components/Pricing'
+import Faq from './components/Faq'
+import FinalCta from './components/FinalCta'
 import Footer from './components/Footer'
-import RequestModal from './components/RequestModal'
+import MockupModal from './components/MockupModal'
 import ChatWidget from './components/ChatWidget'
+import { useReveal } from './lib/useReveal'
 
 export default function App() {
-  const [showModal, setShowModal] = useState(false)
+  const [mockup, setMockup] = useState(false)
+  const open = () => setMockup(true)
+  useReveal()
+
+  // Links to /#mockup (from the 404 page, emails, social bios) open the form directly.
+  useEffect(() => {
+    const check = () => { if (window.location.hash === '#mockup') setMockup(true) }
+    check()
+    window.addEventListener('hashchange', check)
+    return () => window.removeEventListener('hashchange', check)
+  }, [])
+
+  const close = () => {
+    setMockup(false)
+    if (window.location.hash === '#mockup') history.replaceState(null, '', window.location.pathname)
+  }
+
   return (
-    <div className="min-h-screen bg-ivory overflow-x-hidden w-full">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] btn-primary"
-      >
+    <>
+      <a href="#main" className="btn-primary sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70]">
         Skip to content
       </a>
-      <Navbar onRequest={() => setShowModal(true)} />
+      <Nav onMockup={open} />
       <main id="main">
-        <Hero onRequest={() => setShowModal(true)} />
-        <WhySection />
-        <WhatWeBuild />
-        <HowItWorks />
-        <Founders />
-        <Portfolio />
-        <ContactSection onRequest={() => setShowModal(true)} />
+        <Hero onMockup={open} />
+        <Work />
+        <Services />
+        <Process />
+        <Team />
+        <Pricing />
+        <Faq />
+        <FinalCta onMockup={open} />
       </main>
       <Footer />
-      {showModal && <RequestModal onClose={() => setShowModal(false)} />}
+      {mockup && <MockupModal onClose={close} />}
       <ChatWidget />
-    </div>
+    </>
   )
 }
