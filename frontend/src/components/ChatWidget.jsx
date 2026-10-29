@@ -18,18 +18,18 @@ function TypingIndicator() {
     <div className="flex items-end gap-2 mb-3">
       <div
         className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-        style={{ backgroundColor: '#F8DDC9' }}
+        style={{ backgroundColor: '#FFE3D1' }}
       >
         <PeachIcon size={24} uid="typing" />
       </div>
-      <div className="px-4 py-3 rounded-tr-2xl rounded-tl-sm rounded-br-2xl" style={{ backgroundColor: '#F3E6D8' }}>
+      <div className="px-4 py-3 rounded-tr-2xl rounded-tl-sm rounded-br-2xl" style={{ backgroundColor: '#FFE3D1' }}>
         <div className="flex gap-1 items-center h-4">
           {[0, 1, 2].map(i => (
             <div
               key={i}
               className="w-2 h-2 rounded-full"
               style={{
-                backgroundColor: '#685B51',
+                backgroundColor: '#6F5443',
                 animation: 'bounce 1.2s infinite',
                 animationDelay: `${i * 0.2}s`,
               }}
@@ -170,17 +170,17 @@ export default function ChatWidget() {
         <div
           role="dialog"
           aria-label="Chat with Peachy, PeachWeb's assistant"
-          className="fixed bottom-24 right-2.5 md:right-5 z-50 flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-line"
+          className="fixed bottom-24 right-2.5 md:right-5 z-50 flex flex-col rounded-xl shadow-frame overflow-hidden border border-line"
           style={{ width: 'min(380px, calc(100vw - 20px))', height: 'min(520px, calc(100dvh - 120px))', backgroundColor: 'white' }}
         >
           {/* Header */}
           <div
             className="flex items-center gap-3 px-4 py-3 flex-shrink-0"
-            style={{ backgroundColor: '#241D19' }}
+            style={{ backgroundColor: '#3B2A20' }}
           >
             <div
               className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-              style={{ backgroundColor: '#F8DDC9' }}
+              style={{ backgroundColor: '#FFE3D1' }}
             >
               <PeachIcon size={28} uid="header" />
             </div>
@@ -189,7 +189,7 @@ export default function ChatWidget() {
                 <p className="text-sm font-bold text-white leading-tight">Peachy</p>
                 <span className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" aria-hidden="true"></span>
               </div>
-              <p className="text-xs" style={{ color: '#9CA3AF' }}>PeachWeb assistant</p>
+              <p className="text-xs" style={{ color: '#6F5443' }}>PeachWeb assistant</p>
             </div>
 
             {/* New Chat button */}
@@ -197,9 +197,9 @@ export default function ChatWidget() {
               onClick={startNewChat}
               title="Start new chat"
               className="p-1.5 rounded-full transition-colors"
-              style={{ color: '#9CA3AF' }}
+              style={{ color: '#6F5443' }}
               onMouseEnter={e => e.currentTarget.style.color = 'white'}
-              onMouseLeave={e => e.currentTarget.style.color = '#9CA3AF'}
+              onMouseLeave={e => e.currentTarget.style.color = '#6F5443'}
               aria-label="Start new chat"
             >
               {/* pencil-square icon */}
@@ -212,9 +212,9 @@ export default function ChatWidget() {
             <button
               onClick={() => setOpen(false)}
               className="p-1.5 rounded-full transition-colors"
-              style={{ color: '#9CA3AF' }}
+              style={{ color: '#6F5443' }}
               onMouseEnter={e => e.currentTarget.style.color = 'white'}
-              onMouseLeave={e => e.currentTarget.style.color = '#9CA3AF'}
+              onMouseLeave={e => e.currentTarget.style.color = '#6F5443'}
               aria-label="Close chat"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,7 +233,7 @@ export default function ChatWidget() {
                 {msg.role === 'assistant' && (
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden"
-                    style={{ backgroundColor: '#F8DDC9' }}
+                    style={{ backgroundColor: '#FFE3D1' }}
                   >
                     <PeachIcon size={24} uid={`msg-${i}`} />
                   </div>
@@ -247,13 +247,13 @@ export default function ChatWidget() {
                     }`}
                     style={
                       msg.role === 'user'
-                        ? { backgroundColor: '#A3431D' }
-                        : { backgroundColor: '#F3E6D8', color: msg.isError ? '#B91C1C' : '#241D19' }
+                        ? { backgroundColor: '#C1440E' }
+                        : { backgroundColor: '#FFE3D1', color: msg.isError ? '#B91C1C' : '#3B2A20' }
                     }
                   >
                     {msg.content}
                   </div>
-                  <p className="text-xs mt-1 px-1" style={{ color: '#685B51' }}>{msg.time}</p>
+                  <p className="text-xs mt-1 px-1" style={{ color: '#6F5443' }}>{msg.time}</p>
                 </div>
               </div>
             ))}
@@ -268,8 +268,8 @@ export default function ChatWidget() {
                   <button
                     key={s}
                     onClick={() => sendMessage(s)}
-                    className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                    style={{ borderColor: '#E5D7C7', color: '#A3431D', backgroundColor: '#ffffff' }}
+                    className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
+                    style={{ borderColor: '#F1C9AE', color: '#C1440E', backgroundColor: '#ffffff' }}
                   >
                     {s}
                   </button>
@@ -282,15 +282,15 @@ export default function ChatWidget() {
               <div className="follow-up-enter flex gap-2 mt-1 mb-2 ml-10">
                 <button
                   onClick={handleTellMeMore}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                  style={{ borderColor: '#E5D7C7', color: '#A3431D', backgroundColor: '#ffffff' }}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
+                  style={{ borderColor: '#F1C9AE', color: '#C1440E', backgroundColor: '#ffffff' }}
                 >
                   Tell me more
                 </button>
                 <button
                   onClick={handleThatsAll}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all hover:shadow-sm"
-                  style={{ borderColor: '#E5D7C7', color: '#685B51', backgroundColor: '#FBF7F1' }}
+                  className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
+                  style={{ borderColor: '#F1C9AE', color: '#6F5443', backgroundColor: '#FBF7F1' }}
                 >
                   That's all, thanks
                 </button>
@@ -302,8 +302,8 @@ export default function ChatWidget() {
               <div className="follow-up-enter flex justify-center mt-3 mb-1">
                 <button
                   onClick={startNewChat}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white transition-all hover:opacity-90 hover:shadow-md"
-                  style={{ backgroundColor: '#A3431D' }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white transition-all hover:opacity-90"
+                  style={{ backgroundColor: '#C1440E' }}
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
@@ -320,7 +320,7 @@ export default function ChatWidget() {
           {/* Input Area */}
           <div
             className="flex items-center gap-2 px-3 py-3 border-t flex-shrink-0"
-            style={{ borderColor: '#E5D7C7', backgroundColor: 'white' }}
+            style={{ borderColor: '#F1C9AE', backgroundColor: 'white' }}
           >
             <input
               ref={inputRef}
@@ -332,15 +332,15 @@ export default function ChatWidget() {
               aria-label="Message Peachy"
               disabled={loading}
               className="flex-1 px-4 py-2.5 rounded-full text-sm outline-none border transition-colors disabled:opacity-60"
-              style={{ borderColor: '#E5D7C7', backgroundColor: '#FBF7F1' }}
-              onFocus={e => e.target.style.borderColor = '#A3431D'}
-              onBlur={e => e.target.style.borderColor = '#E5D7C7'}
+              style={{ borderColor: '#F1C9AE', backgroundColor: '#FBF7F1' }}
+              onFocus={e => e.target.style.borderColor = '#C1440E'}
+              onBlur={e => e.target.style.borderColor = '#F1C9AE'}
             />
             <button
               onClick={() => sendMessage()}
               disabled={loading || !input.trim()}
               className="w-10 h-10 rounded-full flex items-center justify-center text-white transition-all hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
-              style={{ backgroundColor: '#A3431D' }}
+              style={{ backgroundColor: '#C1440E' }}
               aria-label="Send"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -354,10 +354,10 @@ export default function ChatWidget() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="fixed bottom-5 right-2.5 md:right-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-xl transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-5 right-2.5 md:right-5 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-frame transition-all hover:scale-105 active:scale-95"
         style={{
-          backgroundColor: open ? '#A3431D' : '#ffffff',
-          border: open ? 'none' : '1px solid #E5D7C7',
+          backgroundColor: open ? '#C1440E' : '#ffffff',
+          border: open ? 'none' : '1px solid #F1C9AE',
           color: 'white',
         }}
         aria-label={open ? 'Close chat' : 'Chat with Peachy'}

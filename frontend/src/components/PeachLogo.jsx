@@ -62,23 +62,14 @@ export function PeachIcon({ size = 40, uid = '0' }) {
   )
 }
 
-// Full horizontal logo: peach icon + "PeachWeb" serif text
-export function PeachLogoFull({ iconSize = 36, textColor = '#A3431D', className = '' }) {
+// Full horizontal logo: the round peach mark plus the wordmark in the display serif.
+export function PeachLogoFull({ iconSize = 32, uid = 'logo', className = '', textClassName = 'text-dark' }) {
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <PeachIcon size={iconSize} uid="logo" />
-      <span
-        style={{
-          fontFamily: 'Georgia, "Times New Roman", serif',
-          fontWeight: '700',
-          fontSize: iconSize * 0.78 + 'px',
-          color: textColor,
-          letterSpacing: '-0.01em',
-          lineHeight: 1,
-        }}
-      >
+    <span className={`flex items-center gap-2 ${className}`}>
+      <PeachIcon size={iconSize} uid={uid} />
+      <span className={`font-display leading-none ${textClassName}`} style={{ fontSize: iconSize * 0.9 + 'px' }}>
         PeachWeb
       </span>
-    </div>
+    </span>
   )
 }
