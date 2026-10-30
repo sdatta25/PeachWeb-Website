@@ -8,6 +8,7 @@ export const LOCATION = 'Alpharetta & north Atlanta, GA'
 export const socials = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/peachwebdev/' },
   { label: 'Instagram', href: 'https://www.instagram.com/peachweb.dev/' },
+  { label: 'Facebook', href: 'https://www.facebook.com/share/1MNbFZgaRN/?mibextid=wwXIfr' },
 ]
 
 export const nav = [
