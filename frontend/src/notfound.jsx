@@ -15,7 +15,7 @@ function NotFound() {
       <main className="page grid-12 flex-1 content-center py-16">
         <div className="col-span-4 sm:col-span-10 lg:col-span-8">
           <p className="label mb-6">404</p>
-          <h1 className="mb-6 text-h1">This page took a <em className="text-burnt">wrong turn.</em></h1>
+          <h1 className="mb-6 text-h1">This page took a <span className="text-burnt">wrong turn.</span></h1>
           <p className="mb-10 max-w-prose text-lg text-muted">
             The link may be old, or the address may have a typo. Everything we do is on the homepage.
           </p>

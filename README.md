@@ -5,10 +5,10 @@ A professional web development company website that builds custom websites and A
 ## Project Overview
 
 PeachWeb is a full-stack website with:
-- **React + Vite + Tailwind CSS** frontend (port 5174), self-hosted Instrument Serif / Instrument Sans
+- **React + Vite + Tailwind CSS** frontend (port 5174), self-hosted Instrument Sans (the one typeface used site-wide)
 - **Node.js + Express** backend (port 3002)
 - **Nodemailer** for email notifications and auto-replies
-- **Anthropic Claude** AI chatbot ("Peachy")
+- **Google Gemini** AI chatbot ("Peachy"), on the free tier
 
 ---
 
@@ -24,12 +24,15 @@ Gmail requires an App Password instead of your regular password when using third
 4. Create a new App Password — name it "PeachWeb"
 5. Copy the 16-character password shown
 
-### 2. Get an Anthropic API Key (for AI Chatbot)
+### 2. Get a Gemini API Key (for the AI Chatbot)
 
-1. Go to [console.anthropic.com](https://console.anthropic.com)
-2. Sign in or create an account
-3. Navigate to **API Keys**
-4. Click **Create Key** and copy it
+1. Go to [aistudio.google.com/apikey](https://aistudio.google.com/apikey) and sign in with a Google account
+2. Click **Create API key** (no credit card is needed for the free tier)
+3. Copy the key
+
+The key is a secret: it goes in the backend's environment only (`backend/.env` locally, and
+the host's environment settings in production, e.g. Render > your service > Environment),
+never in the frontend code.
 
 ### 3. Create the `.env` file
 
@@ -43,7 +46,7 @@ Then edit `backend/.env` and fill in your values:
 ```
 EMAIL_USER=peachwebdevelopment@gmail.com
 EMAIL_PASS=your_16_char_gmail_app_password
-ANTHROPIC_API_KEY=sk-ant-...your_key_here...
+GEMINI_API_KEY=your_gemini_api_key
 PORT=3002
 ```
 
@@ -112,7 +115,8 @@ curl -X PATCH -H "x-admin-key: $ADMIN_KEY" \
 ```
 PeachWeb/
 ├── backend/
-│   ├── server.js            # Express API: inquiries (email via relay) and the Peachy chatbot
+│   ├── server.js            # Express API: inquiries (email via relay) and the /api/chat route
+│   ├── chat.js              # Peachy: system prompt + PeachWeb facts, and the Gemini call
 │   └── .env.example
 ├── frontend/
 │   ├── index.html           # SEO meta, Open Graph, JSON-LD, Search Console verification
@@ -148,6 +152,28 @@ To add a portfolio project, add an entry to `projects` and put three screenshots
 The "Get a free mockup" form and the quote estimator both POST to the backend's
 `/api/inquiries`, which emails peachwebdevelopment@gmail.com and sends the visitor a
 confirmation. Nothing extra to configure as long as the backend's email settings stay in place.
+
+## Peachy, the chatbot
+
+Peachy writes each reply with Gemini from the visitor's message and the conversation so far,
+grounded in the facts at the top of `backend/chat.js`. It also writes the follow-up question
+chips under each answer. There are no scripted replies; the only fixed text is the opening
+greeting and the "couldn't connect" fallback in `ChatWidget.jsx`.
+
+- **Keep the facts current.** The backend deploys separately from the site, so it cannot read
+  `frontend/src/content/site.js`. When prices, services, the process or projects change there,
+  update the `KNOWLEDGE` block in `backend/chat.js` too, or Peachy will keep quoting the old version.
+- **Models and limits.** `GEMINI_MODEL` takes one model ID or a comma-separated list tried in
+  order, so a retired model (404) or one whose free quota is spent (429) falls through to the next.
+  Free-tier quotas are per model and change over time; check the current numbers at
+  [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits).
+  `CHAT_RATE_PER_MIN` caps each visitor so one person cannot use up the shared quota.
+- **Privacy.** On Google's free tier, prompts and responses may be used to improve Google's
+  products. The chat tells visitors not to share personal details, but if that matters for a
+  client's chatbot, use a paid-tier key for them.
+- **Check it is working.** `GET /api/health` shows `geminiKeySet` and the model list. A failing
+  chat request logs `Chat error: <status> <code>` on the backend, and the JSON response includes
+  `upstreamStatus` / `upstreamCode` (403 = key problem, 429 = quota, 404 = model name).
 
 ## API Endpoints
 
