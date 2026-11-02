@@ -7,6 +7,7 @@ export default {
     extend: {
       colors: {
         page: v('page'),
+        peach: v('peach'),
         cream: v('cream'),
         chip: v('chip'),
         orange: v('orange'),

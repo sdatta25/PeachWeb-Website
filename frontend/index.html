@@ -8,7 +8,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="author" content="PeachWeb" />
     <link rel="canonical" href="https://peachwebatl.vercel.app/" />
-    <meta name="theme-color" content="#FBF7F1" />
+    <meta name="theme-color" content="#FFF4EA" />
 
     <meta name="geo.region" content="US-GA" />
     <meta name="geo.placename" content="Alpharetta" />
@@ -33,6 +33,23 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    <script>
+      // Decide, before the first paint, whether to play the opening intro. Doing it here lets the
+      // page background already be the intro's colour, so there is no flash of the real site.
+      // src/lib/intro.js reads this verdict. Rules:
+      //   - prefers-reduced-motion always wins: no intro, the real site loads straight away.
+      //   - Not shown again once seen in this browsing session (sessionStorage).
+      //   - Adding ?intro to the URL forces it, for replaying while you work on it.
+      (function () {
+        try {
+          var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          var seen = sessionStorage.getItem('pw-intro-seen')
+          var force = /[?&]intro(=|&|$)/.test(location.search)
+          if (!reduce && (force || !seen)) document.documentElement.setAttribute('data-intro', 'playing')
+        } catch (e) { /* storage unavailable: skip the intro rather than risk replaying it every visit */ }
+      })()
+    </script>
 
     <script type="application/ld+json">
     {

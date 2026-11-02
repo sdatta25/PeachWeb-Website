@@ -11,7 +11,7 @@ function Option({ type = 'radio', name, checked, onChange, label, hint }) {
         checked ? 'border-burnt bg-chip/60' : 'border-line bg-white hover:border-muted'
       }`}
     >
-      <input type={type} name={name} checked={checked} onChange={onChange} className="h-4 w-4 shrink-0 accent-[#C1440E]" />
+      <input type={type} name={name} checked={checked} onChange={onChange} className="h-4 w-4 shrink-0 accent-burnt" />
       <span>
         <span className="block font-semibold">{label}</span>
         {hint && <span className="block text-sm text-muted">{hint}</span>}
