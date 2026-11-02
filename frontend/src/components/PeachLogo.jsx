@@ -62,12 +62,12 @@ export function PeachIcon({ size = 40, uid = '0' }) {
   )
 }
 
-// Full horizontal logo: the round peach mark plus the wordmark in the display serif.
+// Full horizontal logo: the round peach mark plus the wordmark in the site's semibold sans.
 export function PeachLogoFull({ iconSize = 32, uid = 'logo', className = '', textClassName = 'text-dark' }) {
   return (
     <span className={`flex items-center gap-2 ${className}`}>
       <PeachIcon size={iconSize} uid={uid} />
-      <span className={`font-display leading-none ${textClassName}`} style={{ fontSize: iconSize * 0.9 + 'px' }}>
+      <span className={`font-display font-semibold leading-none tracking-[-0.03em] ${textClassName}`} style={{ fontSize: iconSize * 0.72 + 'px' }}>
         PeachWeb
       </span>
     </span>

@@ -1,8 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import nodemailer from 'nodemailer'
-import Groq from 'groq-sdk'
 import { Resend } from 'resend'
+import { generateReply } from './chat.js'
 import { v4 as uuidv4 } from 'uuid'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
@@ -15,6 +15,10 @@ const __dirname = dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 3002
+
+// Render (and most hosts) put one proxy in front of the app; without this every visitor
+// shares the proxy's IP and the chat rate limit below would throttle everyone at once.
+app.set('trust proxy', 1)
 
 app.use(cors())
 app.use(express.json())
@@ -188,15 +192,31 @@ async function sendEmail({ from, to, subject, html, replyTo }) {
   return 'smtp'
 }
 
-// --- Groq client (lazy: a missing key must not take down the whole server) ---
-let groq = null
-function getGroq() {
-  if (!process.env.GROQ_API_KEY) return null
-  if (!groq) groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
-  return groq
-}
+// --- Gemini (free tier, key from Google AI Studio) ---
+// GEMINI_MODEL is one model ID or a comma-separated list tried in order. If a model is
+// retired (404), out of free quota (429) or overloaded (503), the next one answers
+// instead. The `-latest` names are Google aliases that follow the current release.
+const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite,gemini-flash-lite-latest,gemini-flash-latest')
+  .split(',').map(s => s.trim()).filter(Boolean)
+// Optional: cap thinking tokens (0 turns thinking off on models that allow it). Unset by default.
+const THINKING_BUDGET = process.env.GEMINI_THINKING_BUDGET ? Number(process.env.GEMINI_THINKING_BUDGET) : undefined
 
-const CHAT_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-20b'
+// Per-IP limit so a public endpoint cannot drain the free quota. In memory, which is
+// fine for a single instance; it resets on restart.
+const CHAT_LIMIT_PER_MIN = Number(process.env.CHAT_RATE_PER_MIN || 10)
+const chatHits = new Map() // ip -> timestamps (ms) within the last minute
+
+function chatRateLimited(ip) {
+  const now = Date.now()
+  const recent = (chatHits.get(ip) || []).filter(t => now - t < 60_000)
+  const limited = recent.length >= CHAT_LIMIT_PER_MIN
+  if (!limited) recent.push(now)
+  chatHits.set(ip, recent)
+  if (chatHits.size > 5000) {
+    for (const [k, v] of chatHits) if (!v.length || now - v[v.length - 1] >= 60_000) chatHits.delete(k)
+  }
+  return limited
+}
 
 // --- Check the active email transport at boot (logs only, never sends mail) ---
 let emailReady = false
@@ -394,63 +414,37 @@ app.delete('/api/inquiries/:id', requireAdmin, (req, res) => {
   res.json({ success: true })
 })
 
-// POST /api/chat — AI chatbot via Groq
+// POST /api/chat — Peachy, the site assistant (Gemini). Prompt and API call live in chat.js.
 app.post('/api/chat', async (req, res) => {
-  try {
-    const { messages } = req.body
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({ error: 'messages array required' })
-    }
-
-    const systemPrompt = `You are Peachy, the friendly AI assistant for PeachWeb — a web development company that builds custom websites and AI chatbots for local businesses and organizations.
-
-About PeachWeb:
-- We specialize in building professional websites and AI chatbots for local businesses and community organizations
-- Everything we build is custom, modern, and mobile-friendly
-- We offer post-launch support and maintenance
-- Contact: peachwebdevelopment@gmail.com
-
-What we build:
-1. Custom Websites — Beautiful, fast, mobile-first websites tailored to each business
-2. AI Chatbots — Smart AI assistants that answer customer questions 24/7 and capture leads
-3. Mobile-First Design — Sites that look great on any device
-4. Post-Launch Support — Ongoing help, updates, and maintenance
-
-Our 4-step process:
-1. Reach Out — Fill out our "Request a Website" form or email us about your project
-2. Plan — We schedule a discovery call, understand your goals, and create a clear plan
-3. Build — Our team designs and develops your custom site or chatbot with your feedback
-4. Launch — We deploy, test everything, and hand you the keys with full training
-
-Keep answers warm, helpful, and concise (2-4 sentences max). If someone wants to get started, tell them to click "Request a Website" or email peachwebdevelopment@gmail.com. Don't invent pricing — say to reach out for a free consultation.
-
-After every response, end with exactly this line on its own: "Would you like to know more, or is that all?"`
-
-    const client = getGroq()
-    if (!client) {
-      return res.status(503).json({ error: 'Chat unavailable — GROQ_API_KEY is not set on the server.' })
-    }
-
-    const response = await client.chat.completions.create({
-      model: CHAT_MODEL,
-      max_tokens: 400,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages.map(m => ({ role: m.role, content: m.content }))
-      ]
+  if (chatRateLimited(req.ip)) {
+    return res.status(429).json({
+      error: 'Too many messages.',
+      userMessage: "You're sending messages quickly. Give me a few seconds, then try again."
     })
+  }
 
-    res.json({ reply: response.choices[0].message.content })
+  try {
+    const { reply, suggestions } = await generateReply({
+      messages: req.body?.messages,
+      apiKey: process.env.GEMINI_API_KEY,
+      baseUrl: process.env.GEMINI_BASE_URL || undefined, // only set to point at a test double
+      models: GEMINI_MODELS,
+      thinkingBudget: THINKING_BUDGET
+    })
+    res.json({ reply, suggestions })
   } catch (err) {
-    // Surface the upstream status/code so failures are diagnosable without dashboard access.
-    const status = err.status || 500
-    const code = err.error?.error?.code || err.code || null
-    console.error('Chat error:', status, code, err.message)
-    res.status(status === 401 || status === 404 ? 502 : 500).json({
-      error: 'Chat unavailable right now.',
-      upstreamStatus: status,
-      upstreamCode: code,
-      model: CHAT_MODEL
+    // Log the upstream status/code so failures are diagnosable from the host's logs.
+    console.error('Chat error:', err.status, err.code, err.message)
+    if (err.status === 400 && err.code === 'BAD_REQUEST') {
+      return res.status(400).json({ error: err.message })
+    }
+    const noKey = err.code === 'NO_KEY'
+    res.status(noKey ? 503 : err.status === 429 ? 429 : 502).json({
+      error: noKey ? 'Chat unavailable: GEMINI_API_KEY is not set on the server.' : 'Chat unavailable right now.',
+      userMessage: err.userMessage || undefined,
+      upstreamStatus: err.status,
+      upstreamCode: err.code,
+      models: GEMINI_MODELS
     })
   }
 })
@@ -459,8 +453,8 @@ After every response, end with exactly this line on its own: "Would you like to 
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
-    chatModel: CHAT_MODEL,
-    groqKeySet: Boolean(process.env.GROQ_API_KEY),
+    chatModels: GEMINI_MODELS,
+    geminiKeySet: Boolean(process.env.GEMINI_API_KEY),
     emailTransport: relayEnabled ? 'relay'
       : gmailEnabled ? 'gmail'
       : (resendEnabled && resend ? 'resend' : 'smtp'),

@@ -48,13 +48,21 @@ export default function ChatWidget() {
   const [loading, setLoading] = useState(false)
   const [showInitialSuggestions, setShowInitialSuggestions] = useState(true)
   const [showFollowUp, setShowFollowUp] = useState(false)
+  const [suggestions, setSuggestions] = useState([])
   const [showNewChatPrompt, setShowNewChatPrompt] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const warmedUp = useRef(false)
 
   useEffect(() => {
     if (open && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100)
+    }
+    // The backend's host sleeps when idle and takes a while to wake. Poke it the first time
+    // the chat opens so it is already awake by the time the visitor sends a message.
+    if (open && !warmedUp.current) {
+      warmedUp.current = true
+      fetch(`${API_URL}/api/health`).catch(() => {})
     }
   }, [open])
 
@@ -67,6 +75,7 @@ export default function ChatWidget() {
     setInput('')
     setShowInitialSuggestions(true)
     setShowFollowUp(false)
+    setSuggestions([])
     setShowNewChatPrompt(false)
     setTimeout(() => inputRef.current?.focus(), 100)
   }
@@ -78,6 +87,7 @@ export default function ChatWidget() {
     setInput('')
     setShowInitialSuggestions(false)
     setShowFollowUp(false)
+    setSuggestions([])
     setShowNewChatPrompt(false)
 
     const userMessage = {
@@ -100,7 +110,11 @@ export default function ChatWidget() {
         }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Chat error')
+      if (!res.ok) {
+        const e = new Error(data.error || 'Chat error')
+        e.userMessage = data.userMessage // set by the server for rate limits and busy periods
+        throw e
+      }
 
       setMessages(prev => [
         ...prev,
@@ -110,13 +124,15 @@ export default function ChatWidget() {
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ])
+      // Follow-up questions written by the model for this particular answer.
+      setSuggestions(Array.isArray(data.suggestions) ? data.suggestions.filter(s => typeof s === 'string').slice(0, 3) : [])
       setShowFollowUp(true)
     } catch (err) {
       setMessages(prev => [
         ...prev,
         {
           role: 'assistant',
-          content: "I couldn't connect just now. You can reach the team at peachwebdevelopment@gmail.com.",
+          content: err.userMessage || "I couldn't connect just now. You can reach the team at peachwebdevelopment@gmail.com.",
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isError: true,
         },
@@ -124,11 +140,6 @@ export default function ChatWidget() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleTellMeMore = () => {
-    setShowFollowUp(false)
-    sendMessage("Tell me more")
   }
 
   const handleThatsAll = () => {
@@ -240,7 +251,7 @@ export default function ChatWidget() {
                 )}
                 <div className={`max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'} flex flex-col`}>
                   <div
-                    className={`px-4 py-2.5 text-sm leading-relaxed ${
+                    className={`whitespace-pre-wrap break-words px-4 py-2.5 text-sm leading-relaxed ${
                       msg.role === 'user'
                         ? 'rounded-tl-2xl rounded-tr-sm rounded-bl-2xl text-white'
                         : 'rounded-tr-2xl rounded-tl-sm rounded-br-2xl'
@@ -277,16 +288,20 @@ export default function ChatWidget() {
               </div>
             )}
 
-            {/* Follow-up chips after each bot response */}
+            {/* Follow-up chips after each bot response: the model's own suggestions for this
+                answer, or a plain "Tell me more" if it gave none (e.g. after a goodbye). */}
             {showFollowUp && !loading && (
-              <div className="follow-up-enter flex gap-2 mt-1 mb-2 ml-10">
-                <button
-                  onClick={handleTellMeMore}
-                  className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"
-                  style={{ borderColor: '#F1C9AE', color: '#C1440E', backgroundColor: '#ffffff' }}
-                >
-                  Tell me more
-                </button>
+              <div className="follow-up-enter flex flex-wrap gap-2 mt-1 mb-2 ml-10">
+                {(suggestions.length ? suggestions : ['Tell me more']).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => sendMessage(s)}
+                    className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all text-left"
+                    style={{ borderColor: '#F1C9AE', color: '#C1440E', backgroundColor: '#ffffff' }}
+                  >
+                    {s}
+                  </button>
+                ))}
                 <button
                   onClick={handleThatsAll}
                   className="px-3 py-1.5 text-xs font-medium rounded-full border transition-all"

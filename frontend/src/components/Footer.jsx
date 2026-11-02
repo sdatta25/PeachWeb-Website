@@ -1,5 +1,9 @@
+import { Facebook, Instagram, Linkedin } from 'lucide-react'
 import { PeachLogoFull } from './PeachLogo'
 import { EMAIL, LOCATION, nav, socials } from '../content/site'
+
+// Keyed by the `label` in content/site.js `socials`, so adding a network there only needs a line here.
+const socialIcons = { LinkedIn: Linkedin, Instagram, Facebook }
 
 export default function Footer() {
   return (
@@ -23,13 +27,17 @@ export default function Footer() {
 
         <div className="col-span-2 sm:col-span-4 lg:col-span-2">
           <ul>
-            {socials.map(s => (
-              <li key={s.label}>
-                <a href={s.href} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center text-cream/80 hover:text-cream">
-                  {s.label}<span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </li>
-            ))}
+            {socials.map(s => {
+              const Icon = socialIcons[s.label]
+              return (
+                <li key={s.label}>
+                  <a href={s.href} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-2.5 text-cream/80 hover:text-cream">
+                    {Icon && <Icon aria-hidden="true" className="h-5 w-5 shrink-0" strokeWidth={1.75} />}
+                    {s.label}<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </li>
+              )
+            })}
           </ul>
         </div>
 
