@@ -4,8 +4,8 @@
   "description": "Websites and AI chatbots for local businesses and nonprofits around Atlanta.",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#FBF7F1",
-  "theme_color": "#FBF7F1",
+  "background_color": "#FFF4EA",
+  "theme_color": "#FFF4EA",
   "icons": [
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }

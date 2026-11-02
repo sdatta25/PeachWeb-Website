@@ -1,0 +1,162 @@
+/* The opening fake-out (see Intro.jsx). Phase 1 is meant to look awful on purpose: neon green
+   Comic Sans on deep blue, flashing banners, a spinning globe and three Windows-XP-style pop-ups.
+   It is built only from HTML and CSS (no images, GIFs or external requests) and only animates
+   transform and opacity, so it stays light. Every class here is prefixed .intro, .tr or .xp. */
+
+.intro { position: fixed; inset: 0; z-index: 1000; }
+.intro-layer { position: absolute; inset: 0; overflow: hidden; will-change: clip-path; }
+
+/* Once the wipe starts, freeze the parody's looping animations so the browser only has the
+   wipe itself to draw each frame. */
+.is-wiping .tr-marquee-in, .is-wiping .tr-land, .is-wiping .tr-new, .is-wiping .tr-click { animation-play-state: paused; }
+
+/* The wiper blade. Its transform is driven from Intro.jsx so it stays on the cut line. */
+.intro-blade {
+  position: absolute; left: 0; top: 0; width: 30px; height: 100%;
+  transform-origin: 0 0; transform: translateX(-60px);
+  background: rgb(var(--peach)); box-shadow: inset 0 0 0 3px rgb(var(--dark));
+  opacity: 0; pointer-events: none; will-change: transform;
+}
+
+/* "Skip intro": deliberately small and quiet, top right. */
+.intro-skip {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  min-height: 28px; padding: 4px 10px; border: 0; border-radius: 4px; cursor: pointer;
+  background: rgb(0 0 0 / 0.55); color: #fff; font: 500 12px/1.2 'Instrument Sans Variable', system-ui, sans-serif;
+  letter-spacing: 0.01em; opacity: 0; animation: introSkipIn 250ms ease-out forwards;
+}
+.intro-skip:hover { background: rgb(0 0 0 / 0.8); }
+.intro-skip:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+@keyframes introSkipIn { to { opacity: 0.85; } }
+
+/* ---------- The parody site ---------- */
+.tr {
+  position: absolute; inset: 0; overflow: hidden; cursor: default; user-select: none;
+  font-family: 'Comic Sans MS', 'Comic Sans', 'Comic Neue', 'Chalkboard SE', 'Marker Felt', cursive;
+  color: #39ff14;
+  background-color: #00007a;
+  background-image: radial-gradient(#fff 1px, transparent 1.4px), radial-gradient(#ffe600 1px, transparent 1.4px);
+  background-size: 26px 26px, 43px 43px; background-position: 0 0, 13px 17px;
+}
+.tr > * { position: absolute; margin: 0; }
+
+.tr-marquee { top: 0; left: 0; right: 0; height: 30px; overflow: hidden; background: #ffee00; border-bottom: 3px ridge #ff00ff; }
+.tr-marquee-in { display: inline-block; white-space: nowrap; line-height: 30px; font-weight: bold; color: #ff0000; animation: trMarquee 7s linear infinite; }
+@keyframes trMarquee { to { transform: translateX(-50%); } }
+
+.tr-title {
+  top: 44px; left: 3%; right: 3%; text-align: center; font-weight: bold; line-height: 1.05;
+  font-size: clamp(26px, 6.2vw, 76px); color: #39ff14;
+  text-shadow: 3px 3px 0 #ff00ff, -2px -2px 0 #ffee00; transform: rotate(-2deg);
+}
+.tr-rainbow { top: 30%; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #f00, #f80, #ff0, #0f0, #0ff, #00f, #f0f); }
+
+.tr-globe {
+  top: 36%; right: 7%; width: clamp(78px, 13vw, 160px); aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+  background: radial-gradient(circle at 35% 30%, #8df, #0a7bd0 55%, #034a8a);
+  box-shadow: 0 0 0 3px #fff, inset -10px -10px 22px rgb(0 0 0 / 0.55); transform: rotate(-12deg);
+}
+.tr-land {
+  position: absolute; left: 0; top: 0; width: 200%; height: 100%;
+  background-image:
+    radial-gradient(ellipse 14% 22% at 14% 32%, #1fa63a 98%, transparent),
+    radial-gradient(ellipse 10% 30% at 30% 62%, #1fa63a 98%, transparent),
+    radial-gradient(ellipse 12% 16% at 41% 28%, #1fa63a 98%, transparent);
+  background-size: 50% 100%; background-repeat: repeat-x;
+  animation: trSpin 3s linear infinite;
+}
+@keyframes trSpin { to { transform: translateX(-50%); } }
+
+.tr-new {
+  top: 14%; right: 3%; width: clamp(64px, 9vw, 104px); aspect-ratio: 1; display: grid; place-items: center;
+  background: #ff1a1a; color: #ffee00; font-weight: bold; font-size: clamp(13px, 1.9vw, 22px);
+  clip-path: polygon(50% 0, 61% 14%, 79% 8%, 80% 27%, 98% 33%, 87% 50%, 98% 67%, 80% 73%, 79% 92%, 61% 86%, 50% 100%, 39% 86%, 21% 92%, 20% 73%, 2% 67%, 13% 50%, 2% 33%, 20% 27%, 21% 8%, 39% 14%);
+  animation: trSpinSlow 6s linear infinite;
+}
+@keyframes trSpinSlow { to { transform: rotate(360deg); } }
+
+.tr-click {
+  bottom: 21%; right: 4%; width: clamp(140px, 24vw, 300px); padding: 8px 10px; text-align: center; font-weight: bold;
+  font-size: clamp(17px, 3.4vw, 40px); line-height: 1.1; border: 5px outset #ffee00; transform: rotate(4deg);
+  animation: trFlash 0.5s steps(1, end) infinite;
+}
+.tr-click small { display: block; margin-top: 4px; font-size: 0.4em; color: #fff; }
+@keyframes trFlash {
+  0%   { background: #ff0000; color: #ffee00; }
+  50%  { background: #ffee00; color: #ff0000; }
+}
+
+.tr-body {
+  top: 61%; left: 3%; width: 58%; text-align: left; font-size: clamp(15px, 2.5vw, 30px); line-height: 1.25; color: #fff; transform: rotate(1deg);
+}
+.tr-body .c1 { color: #ffee00; font-size: 1.35em; }
+.tr-body .c2 { color: #ff40ff; }
+.tr-body .c3 { background: linear-gradient(90deg, #f00, #f80, #ff0, #0f0, #0ff, #f0f); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.tr-links { bottom: 15%; left: 3%; font-size: clamp(12px, 1.9vw, 22px); color: #fff; }
+.tr-links u { color: #0000ee; text-decoration: underline; } /* default link blue, on deep blue */
+.tr-links u.v { color: #551a8b; }
+
+.tr-counter {
+  bottom: 52px; left: 3%; padding: 5px 10px; background: #000; color: #00ff00; border: 3px inset #888;
+  font: bold clamp(11px, 1.6vw, 18px) 'Courier New', monospace; letter-spacing: 0.04em;
+}
+.tr-construction {
+  bottom: 0; left: 0; right: 0; height: 36px; display: grid; place-items: center;
+  background: repeating-linear-gradient(45deg, #ffee00 0 18px, #111 18px 36px);
+}
+.tr-construction span { padding: 2px 14px; background: #ffee00; color: #111; font-weight: bold; font-size: clamp(12px, 1.8vw, 20px); border: 2px solid #111; }
+
+/* ---------- Windows-XP-style pop-ups ---------- */
+.xp {
+  width: min(310px, 74vw); background: #ece9d8; border: 3px solid #0a3fd6; border-top: 0; border-radius: 9px 9px 0 0;
+  box-shadow: 5px 5px 0 rgb(0 0 0 / 0.55); color: #000; font: 14px/1.35 Tahoma, 'Segoe UI', Verdana, sans-serif;
+  /* All three pop in at the same moment. */
+  animation: xpPop 0.24s cubic-bezier(0.2, 1.5, 0.4, 1) 0.12s both;
+}
+.xp-a { left: 6%; top: 27%; z-index: 3; }
+.xp-b { left: 17%; top: 42%; z-index: 4; width: min(340px, 78vw); }
+.xp-c { left: 31%; top: 31%; z-index: 5; }
+@keyframes xpPop { from { transform: scale(0.35); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.xp-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 5px 4px 9px; border-radius: 7px 7px 0 0;
+  background: linear-gradient(#3d95ff 0%, #0058e6 12%, #0054e3 50%, #0a5bf0 88%, #0045c8 100%);
+  color: #fff; font-weight: bold; text-shadow: 1px 1px #0a246a;
+}
+.xp-btns { display: flex; gap: 3px; }
+.xp-btn {
+  width: 21px; height: 21px; border: 1px solid #fff; border-radius: 3px; text-align: center; font: bold 12px/19px Tahoma, sans-serif; color: #fff;
+  background: linear-gradient(135deg, #4a98ff, #1a5de0); box-shadow: inset 0 0 2px rgb(0 0 0 / 0.4); text-shadow: none;
+}
+.xp-btn.x { background: linear-gradient(135deg, #ea8062, #c8391a); }
+.xp-body { display: flex; gap: 12px; align-items: center; padding: 16px 14px 8px; }
+.xp-body p { margin: 0; font-weight: bold; }
+.xp-icon { flex: none; width: 34px; height: 34px; display: grid; place-items: center; font: bold 20px/1 Georgia, serif; color: #fff; }
+.xp-icon.info { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7db8ff, #1458d0); }
+.xp-icon.win  { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #7dff9a, #10902c); }
+.xp-icon.warn { background: #ffd400; color: #111; clip-path: polygon(50% 0, 100% 100%, 0 100%); padding-top: 10px; }
+.xp-c .xp-body p { color: #c00000; }
+.xp-ok {
+  display: block; width: 78px; margin: 8px auto 14px; padding: 3px 0; text-align: center; border: 1px solid #003c74; border-radius: 3px;
+  background: linear-gradient(#fff, #ecebe5 86%, #d6d0c5); box-shadow: inset 0 0 0 1px #fff;
+}
+
+/* On phones the three windows stack down the screen but still overlap. */
+@media (max-width: 640px) {
+  .tr-title { top: 40px; }
+  .tr-body { top: 33%; width: 94%; }
+  .tr-globe { top: 24%; right: 4%; width: 74px; }
+  .tr-new { top: 13%; right: 2%; width: 58px; }
+  .xp { font-size: 13px; }
+  .xp-a { left: 4%; top: 41%; }
+  .xp-b { left: 12%; top: 50%; }
+  .xp-c { left: 6%; top: 59%; }
+  .tr-click { bottom: 16%; right: 3%; width: 128px; font-size: 15px; }
+  .tr-links { bottom: 11%; }
+  .tr-counter { bottom: 46px; }
+}
+
+/* The page is not given an intro at all when reduced motion is requested (see index.html);
+   this is a second guard in case the preference changes mid-load. */
+@media (prefers-reduced-motion: reduce) { .intro { display: none; } }

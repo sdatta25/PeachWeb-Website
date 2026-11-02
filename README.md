@@ -131,9 +131,9 @@ PeachWeb/
 │       ├── index.css        # Brand tokens (CSS variables), type, components
 │       ├── lib/             # API URL, form submission, scroll-reveal hook
 │       └── components/      # One file per section, in page order:
-│           Nav, Hero, Work (+BeforeAfter), Services (+ChatDemo), Process,
-│           Team, Pricing (+QuoteEstimator), Faq, FinalCta, Footer,
-│           MockupModal, ChatWidget (Peachy)
+│           Intro (opening fake-out), Nav, Hero, Work (+BeforeAfter), Pricing
+│           (+QuoteEstimator), Services (+ChatDemo), Process, Team, Faq, FinalCta,
+│           Footer, MockupModal, ChatWidget (Peachy)
 └── docs/redesign-audit.md   # Design audit and the placeholders still to fill
 ```
 
@@ -146,6 +146,34 @@ site and a dark "PLACEHOLDER" tag in `npm run dev`.
 To add a portfolio project, add an entry to `projects` and put three screenshots in
 `frontend/public/work/`: `<slug>-1280.webp` and `<slug>-720.webp` (16:10 desktop) and
 `<slug>-mobile.webp` (390x844).
+
+## Opening intro (the "fake-out")
+
+First-time visitors see a deliberately awful 2000s website (neon Comic Sans, a spinning globe, three
+pop-up windows) for 2 seconds, then a diagonal wiper sweeps across the screen, removes it, and
+reveals the real site with the punchline "We fix ugly websites." as the first line.
+
+- **Files:** `src/components/Intro.jsx` (the parody, the wipe, the skip button), `Intro.css` (all of
+  its styling, pure CSS with no images), `src/lib/intro.js` (timings and the play/skip decision),
+  and the inline script in `index.html` that makes that decision before first paint.
+- **When it plays:** only if the visitor has not asked their OS for reduced motion *and* has not
+  already seen it in this browsing session (`sessionStorage` key `pw-intro-seen`). A "Skip intro"
+  button appears at 0.5s, top right. While it plays, the real site underneath is `inert`, and the
+  parody is `aria-hidden` and removed from the DOM once the wipe ends.
+- **Replay it while working on it:** add `?intro` to the URL (e.g. `http://localhost:5174/?intro`).
+  It still respects reduced motion.
+- **Change the punchline:** `heroPunchline` in `src/content/site.js`. The parody's own text
+  (marquee, title, pop-up wording) is at the top of `Intro.jsx`. Timings are in `src/lib/intro.js`.
+- **Turn it off entirely:** delete the inline `<script>` in `index.html` (no script means it never
+  plays) and, if you like, the `<Intro />` line in `App.jsx`.
+
+## Colours
+
+The palette is built from the logo's peach and lives in `:root` in `src/index.css` (one line per
+colour, with contrast notes). Peach (`--peach`) is the surface colour for the hero, pricing and final
+call-to-action blocks, ink (`--dark`) is text and buttons, and `--burnt` is for small accent text.
+Add the `on-peach` class to any new solid-peach section: it darkens secondary text there so it stays
+readable.
 
 ## Forms
 

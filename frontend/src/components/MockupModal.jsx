@@ -135,7 +135,7 @@ export default function MockupModal({ onClose }) {
               <textarea id="mk-description" name="description" rows={4} required aria-invalid={invalid === 'description'} aria-describedby="mk-desc-hint" value={form.description} onChange={onChange} className="field resize-y" placeholder="We're a family bakery in Roswell. We want people to see our menu and order cakes ahead." />
             </div>
             <label className="flex min-h-11 cursor-pointer items-center gap-4">
-              <input type="checkbox" name="chatbot" checked={form.chatbot} onChange={onChange} className="h-4 w-4 accent-[#C1440E]" />
+              <input type="checkbox" name="chatbot" checked={form.chatbot} onChange={onChange} className="h-4 w-4 accent-burnt" />
               I'm interested in an AI chatbot too
             </label>
             <div aria-live="assertive">

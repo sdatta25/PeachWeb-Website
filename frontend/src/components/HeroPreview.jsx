@@ -27,10 +27,12 @@ export default function HeroPreview() {
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting })
     io.observe(stage)
 
-    // Pauses the script while the demo is off screen or the tab is hidden.
+    // Pauses the script while the demo is off screen, the tab is hidden, or the opening intro
+    // is still covering the page (so the demo starts as the real site is revealed).
+    const introPlaying = () => document.documentElement.getAttribute('data-intro') === 'playing'
     const wait = async (ms) => {
       await sleep(ms)
-      while (alive && (!visible || document.hidden)) await sleep(300)
+      while (alive && (!visible || document.hidden || introPlaying())) await sleep(300)
     }
 
     const place = (id, dx = 0.5, dy = 0.5, instant = false) => {
@@ -181,7 +183,7 @@ export default function HeroPreview() {
         <div className="pv-cursor" ref={cursorRef}>
           <span className="pv-ripple" key={ripple} style={{ display: ripple ? 'block' : 'none' }} />
           <svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">
-            <path d="M5 3l14 8-6.2 1.6L9.6 19z" fill="#3B2A20" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
+            <path d="M5 3l14 8-6.2 1.6L9.6 19z" fill="#2B1810" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
