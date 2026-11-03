@@ -3,11 +3,11 @@
 // to reveal the real one.
 
 // How long the awful site stays on screen before the wipe starts.
-export const INTRO_HOLD_MS = 2000
+export const INTRO_HOLD_MS = 1100
 // How long the wipe itself takes.
-export const WIPE_MS = 750
+export const WIPE_MS = 500
 // The "Skip intro" button appears this long after load.
-export const SKIP_AFTER_MS = 500
+export const SKIP_AFTER_MS = 300
 // Angle of the wiper blade, in degrees from vertical.
 export const WIPE_ANGLE = 20
 
