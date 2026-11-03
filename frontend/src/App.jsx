@@ -6,6 +6,7 @@ import Services from './components/Services'
 import Process from './components/Process'
 import Team from './components/Team'
 import Pricing from './components/Pricing'
+import Estimate from './components/Estimate'
 import Faq from './components/Faq'
 import FinalCta from './components/FinalCta'
 import Footer from './components/Footer'
@@ -14,6 +15,7 @@ import ChatWidget from './components/ChatWidget'
 import Intro from './components/Intro'
 import { PLAY_INTRO } from './lib/intro'
 import { useReveal } from './lib/useReveal'
+import { warmBackend } from './lib/api'
 
 export default function App() {
   const [mockup, setMockup] = useState(false)
@@ -23,6 +25,7 @@ export default function App() {
   const siteRef = useRef(null)
   const open = () => setMockup(true)
   useReveal()
+  useEffect(() => { warmBackend() }, [])
 
   // Mirror the phase onto <html> so the CSS can hide/animate the hero (see index.css), and keep
   // the real site out of the tab order and accessibility tree while the intro covers it.
@@ -53,8 +56,9 @@ export default function App() {
         <Nav onMockup={open} />
         <main id="main">
           <Hero onMockup={open} />
+          <Estimate />
           <Work />
-          {/* Pricing (with the quote estimator) sits right after the proof, ahead of the detail. */}
+          {/* Pricing sits right after the proof, ahead of the detail. */}
           <Pricing />
           <Services />
           <Process />

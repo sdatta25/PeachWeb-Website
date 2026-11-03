@@ -1,4 +1,3 @@
-import QuoteEstimator from './QuoteEstimator'
 import { pricing } from '../content/site'
 
 export default function Pricing() {
@@ -7,11 +6,13 @@ export default function Pricing() {
       <div className="page grid-12 gap-y-16">
         <div className="col-span-4 sm:col-span-12 lg:col-span-5">
           <h2 id="pricing-heading" className="reveal mb-6 text-h2">Pricing</h2>
-          <p className="reveal mb-12 max-w-prose text-muted">
-            Most projects start under $500. We quote once we understand what you need, and we'll tell you plainly
+          <p className="reveal max-w-prose text-muted">
+            Projects run from $500 to $2,000. We quote once we understand what you need, and we'll tell you plainly
             what fits your budget.
           </p>
+        </div>
 
+        <div className="col-span-4 sm:col-span-12 lg:col-span-6 lg:col-start-7">
           <dl className="reveal border-t border-dark">
             {pricing.map(t => (
               <div key={t.name} className="border-b border-dark/25 py-6">
@@ -26,10 +27,6 @@ export default function Pricing() {
               </div>
             ))}
           </dl>
-        </div>
-
-        <div className="reveal col-span-4 sm:col-span-12 lg:col-span-6 lg:col-start-7">
-          <QuoteEstimator />
         </div>
       </div>
     </section>

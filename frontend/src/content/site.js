@@ -152,13 +152,13 @@ export const founders = [
   },
 ]
 
-// The only price the previous site published was "Requests start under $500".
+// Project prices run from $500 to $2,000.
 // PLACEHOLDER: `price: null` renders "Quoted after a call" in production and a visible
 // placeholder flag in development. Fill in real numbers when you have them.
 export const pricing = [
   {
     name: 'Website',
-    price: 'From under $500', // published on the previous site
+    price: 'From $500',
     note: 'Most small-business sites',
     includes: ['Custom design and build', 'Phone-first layout', 'Launch and walkthrough'],
   },
@@ -176,10 +176,10 @@ export const pricing = [
   },
 ]
 
-// Quote estimator. The output ranges are the budget brackets the previous request form
-// offered. PLACEHOLDER: how answers map onto a bracket is our guess; adjust `score` below.
+// Quote estimator. The four brackets split the $500 to $2,000 project range evenly.
+// PLACEHOLDER: how answers map onto a bracket is our guess; adjust `score` below.
 export const estimator = {
-  brackets: ['Under $500', '$500–$1,500', '$1,500–$5,000', '$5,000+'],
+  brackets: ['$500–$800', '$800–$1,200', '$1,200–$1,600', '$1,600–$2,000'],
   types: ['Restaurant or café', 'Shop or retail', 'Service provider', 'Nonprofit or community group', 'Something else'],
   pages: [
     { label: '1–3 pages', hint: 'Home, about, contact', score: 0 },
@@ -197,7 +197,7 @@ export const estimator = {
 export const faqs = [
   {
     q: 'How much does a website cost?',
-    a: "Most projects start under $500. We quote once we understand what you need, and we'll tell you plainly what fits in your budget. The estimator above gives you a rough range.",
+    a: "Projects run from $500 to $2,000, depending on how many pages you need and which extras you add. We quote once we understand what you need, and we'll tell you plainly what fits in your budget. The quote estimator near the top of the page gives you a rough range.",
   },
   {
     q: 'What is the free mockup?',
