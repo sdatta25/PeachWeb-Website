@@ -15,12 +15,17 @@ export const socials = [
   { label: 'Facebook', href: 'https://www.facebook.com/share/1MNbFZgaRN/?mibextid=wwXIfr' },
 ]
 
-// Same order as the sections on the page (see App.jsx).
+// One tab per section, in the same order as the sections on the page (see App.jsx).
+// The hero is reached through the logo.
 export const nav = [
+  { label: 'Estimate', href: '#estimate' },
   { label: 'Work', href: '#work' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'Services', href: '#services' },
+  { label: 'Process', href: '#process' },
   { label: 'Team', href: '#team' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 // Live sites built by the founders. Screenshots are captured from the live URLs

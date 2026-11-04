@@ -21,7 +21,6 @@ export default function Footer() {
             {nav.map(l => (
               <li key={l.href}><a href={l.href} className="inline-flex min-h-11 items-center text-cream/80 hover:text-cream">{l.label}</a></li>
             ))}
-            <li><a href="#faq" className="inline-flex min-h-11 items-center text-cream/80 hover:text-cream">FAQ</a></li>
           </ul>
         </nav>
 

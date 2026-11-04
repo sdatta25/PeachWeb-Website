@@ -5,12 +5,36 @@ import { nav } from '../content/site'
 export default function Nav({ onMockup }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [active, setActive] = useState('')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Marks the tab for the section the reader is in: the last one whose top has passed a line
+  // 30% down the screen. The sections are in page order, so the last match wins. Nothing is
+  // marked while the hero is showing, and the last tab is marked once the page bottoms out.
+  useEffect(() => {
+    const update = () => {
+      const line = window.innerHeight * 0.3
+      let current = ''
+      for (const l of nav) {
+        const el = document.querySelector(l.href)
+        if (el && el.getBoundingClientRect().top <= line) current = l.href
+      }
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) current = nav[nav.length - 1].href
+      setActive(current)
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
   }, [])
 
   useEffect(() => {
@@ -31,10 +55,16 @@ export default function Nav({ onMockup }) {
           <PeachLogoFull iconSize={30} />
         </a>
 
-        <ul className="hidden items-center gap-2 md:flex">
+        <ul className="hidden items-center gap-1 xl:flex">
           {nav.map(l => (
             <li key={l.href}>
-              <a href={l.href} className="flex min-h-11 items-center rounded px-4 text-base text-muted transition-colors hover:text-dark">
+              <a
+                href={l.href}
+                aria-current={active === l.href ? 'true' : undefined}
+                className={`flex min-h-11 items-center rounded px-3 text-base transition-colors hover:text-dark ${
+                  active === l.href ? 'font-semibold text-dark underline decoration-2 underline-offset-8' : 'text-muted'
+                }`}
+              >
                 {l.label}
               </a>
             </li>
@@ -46,7 +76,7 @@ export default function Nav({ onMockup }) {
             Get a free mockup
           </button>
           <button
-            className="flex h-11 w-11 items-center justify-center rounded md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded xl:hidden"
             onClick={() => setOpen(o => !o)}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -60,11 +90,11 @@ export default function Nav({ onMockup }) {
       </nav>
 
       {open && (
-        <div id="mobile-menu" className="border-t border-line md:hidden">
+        <div id="mobile-menu" className="max-h-[calc(100svh-var(--nav-h))] overflow-y-auto border-t border-line xl:hidden">
           <ul className="page py-2">
             {nav.map(l => (
               <li key={l.href} className="border-b border-line last:border-0">
-                <a href={l.href} onClick={() => setOpen(false)} className="flex min-h-12 items-center font-display text-h3">
+                <a href={l.href} onClick={() => setOpen(false)} aria-current={active === l.href ? 'true' : undefined} className="flex min-h-12 items-center font-display text-h3">
                   {l.label}
                 </a>
               </li>
