@@ -25,7 +25,8 @@
 .on-peach { --muted: 80 48 28; --burnt: 143 52 16; }
 
 @layer base {
-  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  /* In-page jumps are eased in lib/smoothScroll.js, which is quicker than scroll-behavior: smooth. */
+  html { -webkit-text-size-adjust: 100%; }
   body {
     @apply bg-page text-dark font-sans text-base;
     -webkit-font-smoothing: antialiased;
@@ -33,6 +34,8 @@
   }
   h1, h2, h3 { font-family: theme('fontFamily.display'); font-weight: 600; }
   section[id], [id].anchor { scroll-margin-top: var(--nav-h); }
+  /* Sections receive focus after an in-page jump; they need no ring of their own. */
+  [tabindex='-1']:focus { outline: none; }
 
   :focus-visible { outline: 2px solid rgb(var(--burnt)); outline-offset: 3px; border-radius: 4px; }
   .on-dark :focus-visible { outline-color: rgb(var(--cream)); }

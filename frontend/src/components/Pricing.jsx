@@ -19,9 +19,6 @@ export default function Pricing() {
                 <dt className="font-display text-h3">{t.name}</dt>
                 <dd className="mt-2 font-semibold text-burnt">
                   {t.price ?? 'Quoted after a call'}
-                  {t.price == null && import.meta.env.DEV && (
-                    <span className="ml-2 inline-block rounded bg-dark px-2 py-0.5 text-xs text-cream">PLACEHOLDER: set in content/site.js</span>
-                  )}
                 </dd>
                 <dd className="mt-2 text-sm text-muted">{t.note} · {t.includes.join(' · ')}</dd>
               </div>
