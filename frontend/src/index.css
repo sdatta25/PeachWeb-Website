@@ -63,6 +63,12 @@
   }
   .field[aria-invalid='true'] { @apply border-burnt; }
 
+  /* Long-form text on /privacy and /terms: short paragraphs, comfortable spacing. */
+  .legal p { @apply mb-4 last:mb-0; }
+  .legal ul { @apply mb-4 list-disc space-y-2 pl-6 last:mb-0; }
+  .legal li::marker { @apply text-burnt; }
+  .legal strong { @apply font-semibold; }
+
   /* Browser chrome around screenshots: a crisp ink outline, no glow. */
   .frame { @apply overflow-hidden rounded-xl border border-dark bg-white; }
   .frame-bar { @apply flex items-center gap-2 border-b border-dark/20 bg-chip px-4 py-2; }

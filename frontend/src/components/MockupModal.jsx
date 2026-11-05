@@ -142,6 +142,7 @@ export default function MockupModal({ onClose }) {
               {error && <p role="alert" className="rounded border border-burnt bg-chip/50 px-4 py-2 text-sm">{error}</p>}
             </div>
             <button type="submit" disabled={sending} className="btn-primary w-full">{sending ? 'Sending…' : 'Request my free mockup'}</button>
+            <p className="text-sm text-muted text-center">By submitting, you agree to our <a href="/privacy" target="_blank" rel="noopener" className="link text-dark">Privacy Policy<span className="sr-only"> (opens in a new tab)</span></a>.</p>
           </form>
         )}
       </div>
