@@ -190,6 +190,7 @@ export default function QuoteEstimator() {
               <button type="submit" disabled={sending} className="btn-primary w-full sm:w-auto">
                 {sending ? 'Sending…' : 'Send my estimate'}
               </button>
+              <p className="text-sm text-muted">By submitting, you agree to our <a href="/privacy" target="_blank" rel="noopener" className="link text-dark">Privacy Policy<span className="sr-only"> (opens in a new tab)</span></a>.</p>
             </form>
           )}
         </div>

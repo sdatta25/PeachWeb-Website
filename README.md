@@ -133,7 +133,7 @@ PeachWeb/
 │       └── components/      # One file per section, in page order:
 │           Intro (opening animation), Nav, Hero, Work (+BeforeAfter), Pricing
 │           (+QuoteEstimator), Services (+ChatDemo), Process, Team, Faq, FinalCta,
-│           Footer, MockupModal, ChatWidget (Peachy)
+│           Footer, MockupModal, ChatWidget (Peachy); LegalPage for /privacy and /terms
 └── docs/redesign-audit.md   # Design audit and the placeholders still to fill
 ```
 
@@ -173,6 +173,21 @@ colour, with contrast notes). Peach (`--peach`) is the surface colour for the he
 call-to-action blocks, ink (`--dark`) is text and buttons, and `--burnt` is for small accent text.
 Add the `on-peach` class to any new solid-peach section: it darkens secondary text there so it stays
 readable.
+
+## Privacy Policy and Terms of Service
+
+Two real pages, `/privacy` and `/terms`, built from `privacy.html` / `terms.html` (so they are separate
+entries in `vite.config.js`, like `404.html`) and `vercel.json` (`cleanUrls`, which serves `privacy.html` at
+`/privacy`). Layout: `src/components/LegalPage.jsx`. **All the wording is in `src/content/legal.jsx`.**
+
+- The copy was written from an audit of what the site and backend actually do. If you add analytics, a new
+  form provider, an embed, or change where data goes, update `legal.jsx` in the same change.
+- Retention periods and the response time are **placeholders**: search `legal.jsx` for `TODO(PLACEHOLDER)`.
+  They show on the page as highlighted `[PLACEHOLDER: ...]` until you set `SHOW_PLACEHOLDERS` to `false`.
+- Change `LAST_UPDATED` in `legal.jsx` whenever either document changes, and the `lastmod` in
+  `public/sitemap.xml`.
+- Both forms show "By submitting, you agree to our Privacy Policy" under their submit button, and the
+  footer links to both pages.
 
 ## Forms
 
