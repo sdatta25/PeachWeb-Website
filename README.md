@@ -131,7 +131,7 @@ PeachWeb/
 │       ├── index.css        # Brand tokens (CSS variables), type, components
 │       ├── lib/             # API URL, form submission, scroll-reveal hook
 │       └── components/      # One file per section, in page order:
-│           Intro (opening fake-out), Nav, Hero, Work (+BeforeAfter), Pricing
+│           Intro (opening animation), Nav, Hero, Work (+BeforeAfter), Pricing
 │           (+QuoteEstimator), Services (+ChatDemo), Process, Team, Faq, FinalCta,
 │           Footer, MockupModal, ChatWidget (Peachy)
 └── docs/redesign-audit.md   # Design audit and the placeholders still to fill
