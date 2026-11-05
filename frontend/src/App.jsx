@@ -19,7 +19,7 @@ import { warmBackend } from './lib/api'
 
 export default function App() {
   const [mockup, setMockup] = useState(false)
-  // The opening fake-out: 'playing' -> 'wiping' -> 'done'. Starts 'done' when it is not going
+  // The opening animation: 'playing' -> 'lifting' -> 'done'. Starts 'done' when it is not going
   // to run (reduced motion, already seen this session), so the real site loads straight away.
   const [intro, setIntro] = useState(PLAY_INTRO ? 'playing' : 'done')
   const siteRef = useRef(null)
@@ -70,7 +70,7 @@ export default function App() {
         {mockup && <MockupModal onClose={close} />}
         <ChatWidget />
       </div>
-      {intro !== 'done' && <Intro onWipe={() => setIntro('wiping')} onDone={() => setIntro('done')} />}
+      {intro !== 'done' && <Intro onLift={() => setIntro('lifting')} onDone={() => setIntro('done')} />}
     </>
   )
 }

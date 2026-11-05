@@ -71,19 +71,19 @@
 }
 
 /* ---- Intro choreography ----
-   <html data-intro> is "playing" while the opening fake-out is on screen, "wiping" during the
-   wipe, and "done" afterwards (it is absent when the intro never runs, or set to "done"
-   straight away if it is skipped). See components/Intro.jsx and lib/intro.js. */
-html[data-intro='playing'], html[data-intro='wiping'] { overflow: hidden; scrollbar-gutter: stable; }
-/* Before React has mounted, the page is already the intro's blue (no flash of the real site).
-   The root stays blue through the wipe too, so the reserved scrollbar gutter beside the
-   overlay never shows as a pale strip. */
-html[data-intro='playing'], html[data-intro='wiping'] { background: #00007a; }
-html[data-intro='playing'] body { background: #00007a; }
-/* The real site waits underneath; its hero then rises in as the wiper passes. */
+   <html data-intro> is "playing" while the opening logo screen is up, "lifting" while it slides
+   away, and "done" afterwards (it is absent when the intro never runs, or "done" straight away
+   if it is cut short). See components/Intro.jsx and lib/intro.js. */
+html[data-intro='playing'], html[data-intro='lifting'] { overflow: hidden; scrollbar-gutter: stable; }
+/* Before React has mounted, the page is already the intro's peach (no flash of the real site).
+   The root stays peach through the lift too, so the reserved scrollbar gutter beside the
+   screen never shows as a pale strip. */
+html[data-intro='playing'], html[data-intro='lifting'] { background: rgb(var(--peach)); }
+html[data-intro='playing'] body { background: rgb(var(--peach)); }
+/* The real site waits underneath; its hero then rises in as the screen lifts away. */
 html[data-intro='playing'] .intro-in { opacity: 0; }
-html[data-intro='wiping'] .intro-in { animation: introRise 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 80ms + 150ms); }
-@keyframes introRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+html[data-intro='lifting'] .intro-in { animation: introRise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 180ms); }
+@keyframes introRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
 /* Scroll reveal: a 12px rise and fade. Only armed once JS confirms motion is welcome,
    so content is never hidden from crawlers or reduced-motion users. */
