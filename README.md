@@ -147,25 +147,24 @@ To add a portfolio project, add an entry to `projects` and put three screenshots
 `frontend/public/work/`: `<slug>-1280.webp` and `<slug>-720.webp` (16:10 desktop) and
 `<slug>-mobile.webp` (390x844).
 
-## Opening intro (the "fake-out")
+## Opening animation
 
-First-time visitors see a deliberately awful 2000s website (neon Comic Sans, a spinning globe, three
-pop-up windows) for 2 seconds, then a diagonal wiper sweeps across the screen, removes it, and
-reveals the real site with the punchline "We fix ugly websites." as the first line.
+First-time visitors see a short (about 1.8s) opening: a peach screen where the PeachWeb logo builds in
+(the peach, then the wordmark, then a one-line description), after which the screen slides up to
+reveal the site while the hero text fades in.
 
-- **Files:** `src/components/Intro.jsx` (the parody, the wipe, the skip button), `Intro.css` (all of
-  its styling, pure CSS with no images), `src/lib/intro.js` (timings and the play/skip decision),
-  and the inline script in `index.html` that makes that decision before first paint.
-- **When it plays:** only if the visitor has not asked their OS for reduced motion *and* has not
-  already seen it in this browsing session (`sessionStorage` key `pw-intro-seen`). A "Skip intro"
-  button appears at 0.5s, top right. While it plays, the real site underneath is `inert`, and the
-  parody is `aria-hidden` and removed from the DOM once the wipe ends.
+- **Files:** `src/components/Intro.jsx` (the screen and its timing), `Intro.css` (all of its styling;
+  transform and opacity only), `src/lib/intro.js` (the two timings and the play/skip decision), and the
+  inline script in `index.html` that makes that decision before first paint.
+- **When it plays:** only if the visitor has not asked their OS for reduced motion *and* has not already
+  seen it in this browsing session (`sessionStorage` key `pw-intro-seen`). A click or the Escape key
+  lifts it early. While it plays, the real site underneath is `inert` and the screen is `aria-hidden`;
+  the screen is removed from the DOM once it has gone.
 - **Replay it while working on it:** add `?intro` to the URL (e.g. `http://localhost:5174/?intro`).
   It still respects reduced motion.
-- **Change the punchline:** `heroPunchline` in `src/content/site.js`. The parody's own text
-  (marquee, title, pop-up wording) is at the top of `Intro.jsx`. Timings are in `src/lib/intro.js`.
-- **Turn it off entirely:** delete the inline `<script>` in `index.html` (no script means it never
-  plays) and, if you like, the `<Intro />` line in `App.jsx`.
+- **Change it:** hold and lift times are in `src/lib/intro.js`, the description line is at the top of
+  `Intro.jsx`, and the look is in `Intro.css`.
+- **Turn it off entirely:** delete the inline `<script>` in `index.html` (with no script it never plays).
 
 ## Colours
 

@@ -2,10 +2,6 @@
 // Everything below comes from the previous version of the site. Anything we could not
 // source is marked PLACEHOLDER and listed in docs/redesign-audit.md.
 
-// The punchline that lands right after the opening intro's wipe, above the hero headline.
-// Swap this one line to change it (e.g. "Don't let your business look like this.").
-export const heroPunchline = 'We fix ugly websites.'
-
 export const EMAIL = 'peachwebdevelopment@gmail.com'
 export const LOCATION = 'Alpharetta & north Atlanta, GA'
 

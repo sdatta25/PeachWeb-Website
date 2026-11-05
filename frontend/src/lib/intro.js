@@ -1,15 +1,10 @@
-// Settings and the play/skip decision for the opening "fake-out" intro
-// (src/components/Intro.jsx): a deliberately awful 2000s website that gets wiped away
-// to reveal the real one.
+// Settings and the play/skip decision for the opening animation (src/components/Intro.jsx):
+// a peach screen where the PeachWeb logo builds in, then the screen lifts away to reveal the site.
 
-// How long the awful site stays on screen before the wipe starts.
-export const INTRO_HOLD_MS = 1100
-// How long the wipe itself takes.
-export const WIPE_MS = 500
-// The "Skip intro" button appears this long after load.
-export const SKIP_AFTER_MS = 300
-// Angle of the wiper blade, in degrees from vertical.
-export const WIPE_ANGLE = 20
+// How long the logo screen stays up before it lifts.
+export const INTRO_HOLD_MS = 1150
+// How long the lift takes. The whole opening is about 1.8s.
+export const LIFT_MS = 650
 
 const SEEN_KEY = 'pw-intro-seen'
 
