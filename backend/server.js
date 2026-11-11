@@ -302,7 +302,7 @@ app.post('/api/inquiries', async (req, res) => {
             <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Phone</td><td style="padding:10px 0;color:#1C1C1C;">${esc(phone) || '—'}</td></tr>
             <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Organization</td><td style="padding:10px 0;color:#1C1C1C;">${esc(organization) || '—'}</td></tr>
             <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Org Type</td><td style="padding:10px 0;color:#1C1C1C;">${esc(orgType) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Budget</td><td style="padding:10px 0;color:#1C1C1C;">${esc(budget) || '—'}</td></tr>
+            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Budget</td><td style="padding:10px 0;color:#1C1C1C;font-weight:600;">${esc(budget) || '—'}</td></tr>
             <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Services</td><td style="padding:10px 0;color:#1C1C1C;">${esc(Array.isArray(services) ? services.join(', ') : services) || '—'}</td></tr>
           </table>
           <div style="margin-top:24px;padding:20px;background:#FFF5F0;border-radius:8px;border-left:4px solid #FF8C61;">
@@ -332,6 +332,21 @@ app.post('/api/inquiries', async (req, res) => {
 
     // Auto-reply ONLY if email provided
     if (email && email.trim()) {
+      // A plain recap of what the customer chose, so the budget they picked is in their copy too.
+      const recapRows = [
+        ['Business type', orgType],
+        ['Business name', organization],
+        ['Services', Array.isArray(services) ? services.join(', ') : services],
+        ['Budget', budget]
+      ].filter(([, v]) => v && String(v).trim())
+      const recapHtml = recapRows.length ? `
+            <div style="border:1px solid #FFE4D6;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
+              <p style="margin:0 0 12px;font-weight:700;color:#1C1C1C;">Here's what you sent us:</p>
+              <table style="width:100%;border-collapse:collapse;">
+                ${recapRows.map(([label, value]) => `<tr><td style="padding:6px 0;color:#6B7280;font-size:14px;width:130px;vertical-align:top;">${label}</td><td style="padding:6px 0;color:#1C1C1C;font-size:14px;font-weight:600;">${esc(Array.isArray(value) ? value.join(', ') : value)}</td></tr>`).join('')}
+              </table>
+              ${/\$/.test(String(budget || '')) ? '<p style="margin:12px 0 0;color:#6B7280;font-size:13px;line-height:1.5;">Budgets are a rough guide. We will confirm a real quote after a short call.</p>' : ''}
+            </div>` : ''
       const autoReplyHtml = `
         <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #FFE4D6;">
           <div style="background:linear-gradient(135deg,#FF8C61,#E8571A);padding:40px;text-align:center;">
@@ -340,7 +355,8 @@ app.post('/api/inquiries', async (req, res) => {
           </div>
           <div style="padding:40px;">
             <h2 style="color:#1C1C1C;font-size:22px;margin:0 0 16px;">Hi ${esc(name)}, thanks for reaching out!</h2>
-            <p style="color:#374151;line-height:1.7;font-size:15px;margin:0 0 24px;">Thanks for contacting PeachWeb. We will get back to you in a few business days. Stay tuned to receive further information for your request.</p>
+            <p style="color:#374151;line-height:1.7;font-size:15px;margin:0 0 24px;">Thanks for contacting PeachWeb. We will get back to you within 1–2 business days.</p>
+            ${recapHtml}
             <div style="background:#FFF5F0;border-radius:12px;padding:24px;margin-bottom:24px;">
               <p style="margin:0 0 16px;font-weight:700;color:#1C1C1C;">Here's what happens next:</p>
               <div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:12px;">
@@ -359,7 +375,7 @@ app.post('/api/inquiries', async (req, res) => {
             <p style="color:#6B7280;font-size:14px;">Questions? Reply to this email or reach us at <a href="mailto:peachwebdevelopment@gmail.com" style="color:#FF8C61;">peachwebdevelopment@gmail.com</a></p>
           </div>
           <div style="background:#FFF5F0;padding:24px;text-align:center;border-top:1px solid #FFE4D6;">
-            <p style="margin:0;color:#9CA3AF;font-size:13px;">© 2024 PeachWeb · Web Development & AI Chatbots for Local Businesses</p>
+            <p style="margin:0;color:#9CA3AF;font-size:13px;">© ${new Date().getFullYear()} PeachWeb · Web Development & AI Chatbots for Local Businesses</p>
           </div>
         </div>
       `
