@@ -195,6 +195,13 @@ The "Get a free mockup" form and the quote estimator both POST to the backend's
 `/api/inquiries`, which emails peachwebdevelopment@gmail.com and sends the visitor a
 confirmation. Nothing extra to configure as long as the backend's email settings stay in place.
 
+The mockup request is a three-step, one-question-at-a-time flow (`src/components/MockupFlow.jsx`): kind
+of business (tap a card), about the business, then name and email. It is shown inline in the `#contact`
+section and inside the modal (`MockupModal.jsx`) that the other "Get a free mockup" buttons open. It sends
+exactly the payload the old single form did (`name`, `email`, `phone`, `organization`, `orgType`,
+`services`, `description`), so the backend needed no change. If you change a step's content, re-measure the
+`min-h` values on the step area (`data-flow-area`) so the card keeps a steady height.
+
 ## Peachy, the chatbot
 
 Peachy writes each reply with Gemini from the visitor's message and the conversation so far,

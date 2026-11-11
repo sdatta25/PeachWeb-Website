@@ -64,7 +64,7 @@ export default function App() {
           <Process />
           <Team />
           <Faq />
-          <FinalCta onMockup={open} />
+          <FinalCta />
         </main>
         <Footer />
         {mockup && <MockupModal onClose={close} />}
