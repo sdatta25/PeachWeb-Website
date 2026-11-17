@@ -140,7 +140,7 @@ export const founders = [
     role: 'Co-founder',
     photo: '/founders/souren.jpg',
     linkedin: 'https://www.linkedin.com/in/sourendatta/',
-    bio: 'Started building sites for nonprofits and school groups and got hooked on the moment one goes live, when people can finally find an organization that was invisible the week before. Co-founded PeachWeb so the small businesses around Atlanta could have that too: a site they are proud to hand someone, without agency prices.',
+    bio: 'I’m Souren Datta, co-founder of PeachWeb. I became interested in website design after I started making websites for nonprofits and school clubs, and I loved shipping them so the people behind each one could put the site to work and benefit from it. I’ve built sites for Finance For Movement, SFE Foundry, AHS YEFA, and content creator Sabrine Mezali. When you work with PeachWeb, you work directly with me and Adwait. We answer our own emails, and we won’t hand your project to someone else.',
     work: ['PeachWeb', 'Finance For Movement', 'SFE Foundry', 'AHS YEFA', 'Sabrine Mezali (content creator)'],
   },
   {
