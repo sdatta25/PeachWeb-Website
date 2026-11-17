@@ -5,23 +5,21 @@ import { EMAIL, LOCATION, nav, socials } from '../content/site'
 // Keyed by the `label` in content/site.js `socials`, so adding a network there only needs a line here.
 const socialIcons = { LinkedIn: Linkedin, Instagram, Facebook }
 
-// `base` is '' on the home page (links are in-page anchors like #work) and '/' on other pages
-// (so the same links lead back to the home page).
-export default function Footer({ base = '' }) {
+export default function Footer() {
   return (
     <footer className="on-dark bg-dark text-cream">
       <div className="page grid-12 gap-y-12 py-16">
         <div className="col-span-4 sm:col-span-12 lg:col-span-5">
-          <a href={`${base}#top`} aria-label="PeachWeb, back to top" className="inline-flex min-h-11 items-center rounded">
+          <a href="/" aria-label="PeachWeb home" className="inline-flex min-h-11 items-center rounded">
             <PeachLogoFull iconSize={30} uid="footer" textClassName="text-cream" />
           </a>
-          <p className="mt-4 max-w-xs text-cream/80">Websites and AI chatbots for local businesses and nonprofits.</p>
+          <p className="mt-4 max-w-xs text-cream/80">Websites, AI chatbots, and integrations, engineered for local businesses.</p>
         </div>
 
         <nav aria-label="Footer" className="col-span-2 sm:col-span-4 lg:col-span-2">
           <ul>
             {nav.map(l => (
-              <li key={l.href}><a href={`${base}${l.href}`} className="inline-flex min-h-11 items-center text-cream/80 hover:text-cream">{l.label}</a></li>
+              <li key={l.href}><a href={l.href} className="inline-flex min-h-11 items-center text-cream/80 hover:text-cream">{l.label}</a></li>
             ))}
           </ul>
         </nav>

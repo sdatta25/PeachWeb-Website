@@ -13,12 +13,12 @@ export default function Hero({ onMockup }) {
             A website that gets your phone ringing.
           </h1>
           <p className="intro-in mb-10 max-w-prose text-lg text-muted" style={stagger(1)}>
-            We design and build websites and AI chatbots that bring local businesses and nonprofits more calls,
-            bookings, and customers.
+            We design and engineer websites, AI chatbots, and the systems behind them, so local businesses get
+            more calls, bookings, and customers.
           </p>
           <div className="intro-in flex flex-col gap-4 sm:flex-row sm:items-center" style={stagger(2)}>
             <button onClick={onMockup} className="btn-primary">Get a free mockup</button>
-            <a href="#work" className="btn-line">See our work</a>
+            <a href="/work" className="btn-line">See our work</a>
           </div>
         </div>
 
@@ -29,7 +29,7 @@ export default function Hero({ onMockup }) {
             <HeroPreview />
           </div>
           <figcaption className="mt-4 text-sm text-muted">
-            A sample site concept, not a real client. <a href="#work" className="link text-dark">See sites we've built</a>
+            A sample site concept, not a real client. <a href="/work" className="link text-dark">See sites we've built</a>
           </figcaption>
         </figure>
       </div>

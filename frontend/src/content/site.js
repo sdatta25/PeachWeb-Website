@@ -11,17 +11,128 @@ export const socials = [
   { label: 'Facebook', href: 'https://www.facebook.com/share/1MNbFZgaRN/?mibextid=wwXIfr' },
 ]
 
-// One tab per section, in the same order as the sections on the page (see App.jsx).
-// The hero is reached through the logo.
+// One entry per page (see vite.config.js for the page list). Home is reached through the logo.
 export const nav = [
-  { label: 'Estimate', href: '#estimate' },
-  { label: 'Work', href: '#work' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Services', href: '#services' },
-  { label: 'Process', href: '#process' },
-  { label: 'Team', href: '#team' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Work', href: '/work' },
+  { label: 'Services', href: '/services' },
+  { label: 'Use cases', href: '/use-cases' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+]
+
+export const USE_CASES_PDF = '/peachweb-use-cases.pdf'
+
+// What a site looks like for each kind of business. `flow` is the path a customer's request
+// takes, left to right. `example` points at a live site of ours only where one really exists.
+// This list also feeds the downloadable PDF (scripts/make-use-cases-pdf.mjs).
+export const useCases = [
+  {
+    id: 'restaurant',
+    name: 'Restaurants and cafés',
+    problem: 'People check the menu and hours on their phone before they decide where to eat. If they cannot find either in a few seconds, they pick somewhere else.',
+    build: [
+      'Menu, hours, and location on the first screen, laid out for phones',
+      'A catering or large-order request form that asks for the date, headcount, and budget',
+      'A chatbot that answers "are you open?", "do you have vegan options?", and "do you cater?" from your own information',
+    ],
+    flow: ['Customer fills in the order form', 'Our server checks and records it', 'You get an email with tap-to-call and reply buttons', 'The customer gets a confirmation'],
+  },
+  {
+    id: 'service',
+    name: 'Service businesses',
+    who: 'Plumbers, dentists, salons, tutors, contractors',
+    problem: 'Most leads arrive while you are on a job. A missed call usually goes to the next business on the list.',
+    build: [
+      'A request form that collects the job details you would otherwise ask for on the phone',
+      'A quote estimator, so visitors see a price range before they contact you',
+      'Online booking requests for appointments',
+      'A chatbot that answers common questions after hours and takes down contact details',
+    ],
+    flow: ['Visitor gets a rough quote', 'They send their details', 'The lead lands in your inbox, budget included', 'You reply or call back in one tap'],
+  },
+  {
+    id: 'retail',
+    name: 'Shops and retail',
+    problem: 'Customers want to know what you carry and whether you are open before they make the trip.',
+    build: [
+      'A product or collection showcase with photos that load fast on a phone',
+      'Hours, directions, and parking where people expect them',
+      'Online ordering or a store, when you are ready to sell online',
+    ],
+    flow: ['Customer browses on their phone', 'They place an order or ask a question', 'You are notified right away', 'They get a confirmation'],
+  },
+  {
+    id: 'creator',
+    name: 'Authors and creators',
+    problem: 'Your audience lives on platforms you do not control. A site of your own gives them one place to buy from you and one link to share.',
+    build: [
+      'A home for your work, with a clear path to buy',
+      'A resource library for free material',
+      'Links out to your channels, and one link back to you',
+    ],
+    flow: ['A follower clicks your link', 'They land on your own site', 'They buy, download, or subscribe'],
+    example: 'sabrine-math',
+  },
+  {
+    id: 'membership',
+    name: 'Membership groups and teams',
+    problem: 'Schedules, sign-ups, and announcements end up scattered across group chats and shared documents.',
+    build: [
+      'A public site that brings in members and sponsors',
+      'A members area for the things only members should see',
+      'Meeting times, events, and resources in one place',
+    ],
+    flow: ['A prospect finds the public site', 'They apply or sign up', 'Members sign in for the rest'],
+    example: 'sfe-foundry',
+  },
+  {
+    id: 'community',
+    name: 'Community organizations',
+    problem: 'Supporters need to see what you do, when it happens, and how to take part, without calling to ask.',
+    build: [
+      'Programs and events, kept current',
+      'Volunteer and sign-up forms that reach the right person',
+      'A clear way to get in touch or contribute',
+    ],
+    flow: ['A supporter reads about a program', 'They sign up', 'Your team is notified', 'They get a confirmation'],
+    example: 'finance-for-movement',
+  },
+]
+
+// What this site itself runs on. Every item here is something we built and operate for
+// PeachWeb, so each claim can be checked by using the site.
+export const stack = [
+  {
+    name: 'Front end',
+    tools: 'React, Vite, Tailwind CSS',
+    text: 'Pages are built as components, sized for phones first, and shipped as small static files so they load quickly.',
+  },
+  {
+    name: 'Server and API',
+    tools: 'Node.js, Express',
+    text: 'Forms post to our own API. It validates each request, records it, and decides what happens next.',
+  },
+  {
+    name: 'Email pipeline',
+    tools: 'Serverless mail relay',
+    text: 'Every request triggers two emails: a notification to the business and a confirmation to the customer. If the notification cannot be sent, the visitor is told, so a lead is never lost silently.',
+  },
+  {
+    name: 'AI chatbot',
+    tools: 'Google Gemini API',
+    text: 'Peachy answers from a written brief about the business, with fallback models and a rate limit so it stays up and stays on topic.',
+  },
+  {
+    name: 'Hosting and domains',
+    tools: 'Vercel, Render, DNS, HTTPS',
+    text: 'We set up hosting, the domain, DNS records, and certificates, and deploy automatically on every change.',
+  },
+  {
+    name: 'Search and monitoring',
+    tools: 'Search Console, structured data, uptime checks',
+    text: 'Sitemaps, structured data, and Search Console so Google can read the site, plus an uptime monitor that emails us if the server goes down.',
+  },
 ]
 
 // Live sites built by the founders. Screenshots are captured from the live URLs
@@ -198,7 +309,7 @@ export const estimator = {
 export const faqs = [
   {
     q: 'How much does a website cost?',
-    a: "Projects run from $500 to $2,000, depending on how many pages you need and which extras you add. We quote once we understand what you need, and we'll tell you plainly what fits in your budget. The quote estimator near the top of the page gives you a rough range.",
+    a: "Projects run from $500 to $2,000, depending on how many pages you need and which extras you add. We quote once we understand what you need, and we'll tell you plainly what fits in your budget. The quote estimator on the Pricing page gives you a rough range.",
   },
   {
     q: 'What is the free mockup?',
@@ -223,6 +334,6 @@ export const faqs = [
   },
   {
     q: 'Have you built sites for businesses like mine?',
-    a: "Our live work so far is for nonprofits, school organizations, and a content creator, and every one of those sites is linked above. We started PeachWeb to do the same work for local businesses around Atlanta.",
+    a: "Every site we have shipped is live and linked on the Work page: a membership site with a member portal, a team site built to bring in sponsors, a site that sells a book, and more. The engineering is the same for a local business. See the Use cases page for how it applies to yours.",
   },
 ]

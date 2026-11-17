@@ -31,13 +31,14 @@ export default function Team() {
             <h2 id="team-heading" className="reveal mb-8 text-h2">Meet the two people building your site.</h2>
             <div className="reveal max-w-prose space-y-4 text-muted">
               <p>
-                We kept meeting shop owners, restaurants, and nonprofits around Atlanta doing good work behind an
-                outdated page, or no page at all. A well-made site shouldn't only be for businesses that can pay
-                big-agency rates.
+                We kept meeting shop owners and restaurants around Atlanta doing good work behind an outdated
+                page, or no page at all. Most of them had been quoted agency prices for what is, underneath, a
+                well-defined engineering job.
               </p>
               <p>
-                We're two students in the Atlanta area, and building websites is what we like doing most. So we
-                started PeachWeb to do it properly, at a price a small business can manage.
+                We're two developers in Alpharetta. We design, build, and run every site ourselves: the pages,
+                the server behind the forms, the chatbot, and the email that lands in your inbox. So we started
+                PeachWeb to do that work properly for local businesses.
               </p>
             </div>
           </div>

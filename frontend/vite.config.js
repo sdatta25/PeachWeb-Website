@@ -2,11 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
-// Vercel serves privacy.html at /privacy (see vercel.json). This does the same in `npm run dev`
+// Vercel serves privacy.html at /privacy, work.html at /work, and so on (see vercel.json). This does the same in `npm run dev`
 // and `npm run preview`, so the clean URLs work locally too.
 const cleanUrls = () => {
   const rewrite = (req, _res, next) => {
-    const m = req.url && req.url.match(/^\/(privacy|terms)\/?(\?.*)?$/)
+    const m = req.url && req.url.match(/^\/(privacy|terms|work|services|use-cases|pricing|about|contact)\/?(\?.*)?$/)
     if (m) req.url = `/${m[1]}.html${m[2] || ''}`
     next()
   }
@@ -28,6 +28,12 @@ export default defineConfig({
         notFound: resolve(__dirname, '404.html'),
         privacy: resolve(__dirname, 'privacy.html'),
         terms: resolve(__dirname, 'terms.html'),
+        work: resolve(__dirname, 'work.html'),
+        services: resolve(__dirname, 'services.html'),
+        useCases: resolve(__dirname, 'use-cases.html'),
+        pricing: resolve(__dirname, 'pricing.html'),
+        about: resolve(__dirname, 'about.html'),
+        contact: resolve(__dirname, 'contact.html'),
       },
     },
   },

@@ -25,22 +25,25 @@ function Caption({ project, n }) {
   )
 }
 
-export default function Work() {
+// `full` is the /work page: every project, no intro heading (the page header has it).
+// Without it, the home page gets the two featured projects and a link to the rest.
+export default function Work({ full = false }) {
   const featured = projects.slice(0, 2)
   const rest = projects.slice(2)
 
   return (
-    <section id="work" aria-labelledby="work-heading" className="border-t border-line py-16 sm:py-24 lg:py-32">
+    <section id="work" aria-labelledby={full ? undefined : 'work-heading'} aria-label={full ? 'Projects' : undefined} className="border-t border-line py-16 sm:py-24 lg:py-32">
       <div className="page">
+        {!full && (
         <div className="grid-12 mb-16 lg:mb-24">
           <h2 id="work-heading" className="reveal col-span-4 text-h2 sm:col-span-8">
             Six live sites, built start to finish by the two of us.
           </h2>
           <p className="reveal col-span-4 mt-6 max-w-prose text-muted sm:col-span-6 sm:col-start-1">
-            Clubs, nonprofits, a school team, and a content creator. Open them on your phone before you decide
-            whether we're a fit.
+            Every one is in production. Open them on your phone before you decide whether we're a fit.
           </p>
         </div>
+        )}
 
         {/* Two featured projects: a large desktop shot with the phone view overlapping it. */}
         <div className="space-y-24 lg:space-y-32">
@@ -70,6 +73,8 @@ export default function Work() {
           })}
         </div>
 
+        {full ? (
+          <>
         {/* The rest as a staggered two-column index. */}
         <div className="mt-24 grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:mt-32">
           {rest.map((p, i) => (
@@ -83,6 +88,12 @@ export default function Work() {
         </div>
 
         <BeforeAfter />
+          </>
+        ) : (
+          <p className="reveal mt-20 lg:mt-28">
+            <a href="/work" className="btn-line">See all {projects.length} sites</a>
+          </p>
+        )}
       </div>
     </section>
   )

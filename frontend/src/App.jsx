@@ -4,10 +4,8 @@ import Hero from './components/Hero'
 import Work from './components/Work'
 import Services from './components/Services'
 import Process from './components/Process'
-import Team from './components/Team'
-import Pricing from './components/Pricing'
-import Estimate from './components/Estimate'
-import Faq from './components/Faq'
+import Engineering from './components/Engineering'
+import { UseCasesTeaser } from './components/UseCases'
 import FinalCta from './components/FinalCta'
 import Footer from './components/Footer'
 import MockupModal from './components/MockupModal'
@@ -56,14 +54,11 @@ export default function App() {
         <Nav onMockup={open} />
         <main id="main">
           <Hero onMockup={open} />
-          <Estimate />
           <Work />
-          {/* Pricing sits right after the proof, ahead of the detail. */}
-          <Pricing />
           <Services />
+          <UseCasesTeaser />
+          <Engineering />
           <Process />
-          <Team />
-          <Faq />
           <FinalCta />
         </main>
         <Footer />

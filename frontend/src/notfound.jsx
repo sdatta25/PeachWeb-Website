@@ -21,7 +21,7 @@ function NotFound() {
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <a href="/" className="btn-primary">Go to the homepage</a>
-            <a href="/#work" className="btn-line">See our work</a>
+            <a href="/work" className="btn-line">See our work</a>
           </div>
           <p className="mt-10 text-sm text-muted">
             Looking for something specific? <a href={`mailto:${EMAIL}`} className="link text-dark">{EMAIL}</a>

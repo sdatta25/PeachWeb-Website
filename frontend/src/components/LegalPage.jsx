@@ -60,7 +60,7 @@ export default function LegalPage({ doc }) {
         </div>
       </main>
 
-      <Footer base="/" />
+      <Footer />
     </div>
   )
 }
