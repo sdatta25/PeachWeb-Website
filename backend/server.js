@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer'
 import { Resend } from 'resend'
 import { generateReply } from './chat.js'
 import { v4 as uuidv4 } from 'uuid'
+import { buildNotifyEmail, buildAutoReplyEmail } from './emails.js'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { readFileSync, writeFileSync, existsSync } from 'fs'
@@ -237,13 +238,6 @@ if (relayEnabled) {
     .catch(err => console.error('Email transport: SMTP NOT ready — inquiry emails will fail:', err.message))
 }
 
-// Escape user input before it goes into an HTML email body
-function esc(v) {
-  return String(v ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
-}
-
 // --- Admin auth ---
 // The key used to live in the source of a public repo, which meant anyone who
 // read it could list every inquiry. It now comes from the environment, and the
@@ -288,31 +282,8 @@ app.post('/api/inquiries', async (req, res) => {
     inquiries.push(inquiry)
     writeInquiries(inquiries)
 
-    // Notification email to PeachWeb
-    const notifyHtml = `
-      <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #FFE4D6;">
-        <div style="background:#FF8C61;padding:32px 40px;">
-          <h1 style="color:white;margin:0;font-size:24px;">🍑 New Website Request</h1>
-          <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px;">Submitted via PeachWeb</p>
-        </div>
-        <div style="padding:32px 40px;">
-          <table style="width:100%;border-collapse:collapse;">
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;width:140px;">Name</td><td style="padding:10px 0;color:#1C1C1C;font-weight:600;">${esc(name)}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Email</td><td style="padding:10px 0;color:#1C1C1C;">${esc(email) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Phone</td><td style="padding:10px 0;color:#1C1C1C;">${esc(phone) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Organization</td><td style="padding:10px 0;color:#1C1C1C;">${esc(organization) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Org Type</td><td style="padding:10px 0;color:#1C1C1C;">${esc(orgType) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Budget</td><td style="padding:10px 0;color:#1C1C1C;font-weight:600;">${esc(budget) || '—'}</td></tr>
-            <tr><td style="padding:10px 0;color:#6B7280;font-size:13px;">Services</td><td style="padding:10px 0;color:#1C1C1C;">${esc(Array.isArray(services) ? services.join(', ') : services) || '—'}</td></tr>
-          </table>
-          <div style="margin-top:24px;padding:20px;background:#FFF5F0;border-radius:8px;border-left:4px solid #FF8C61;">
-            <p style="margin:0 0 8px;color:#6B7280;font-size:13px;font-weight:600;">PROJECT DESCRIPTION</p>
-            <p style="margin:0;color:#1C1C1C;line-height:1.6;">${esc(description)}</p>
-          </div>
-          <p style="margin-top:24px;color:#6B7280;font-size:13px;">Inquiry ID: ${inquiry.id}</p>
-        </div>
-      </div>
-    `
+    // Notification email to PeachWeb (the template lives in emails.js)
+    const notifyHtml = buildNotifyEmail(inquiry)
 
     let emailed = false
     let emailError = null
@@ -332,53 +303,7 @@ app.post('/api/inquiries', async (req, res) => {
 
     // Auto-reply ONLY if email provided
     if (email && email.trim()) {
-      // A plain recap of what the customer chose, so the budget they picked is in their copy too.
-      const recapRows = [
-        ['Business type', orgType],
-        ['Business name', organization],
-        ['Services', Array.isArray(services) ? services.join(', ') : services],
-        ['Budget', budget]
-      ].filter(([, v]) => v && String(v).trim())
-      const recapHtml = recapRows.length ? `
-            <div style="border:1px solid #FFE4D6;border-radius:12px;padding:20px 24px;margin-bottom:24px;">
-              <p style="margin:0 0 12px;font-weight:700;color:#1C1C1C;">Here's what you sent us:</p>
-              <table style="width:100%;border-collapse:collapse;">
-                ${recapRows.map(([label, value]) => `<tr><td style="padding:6px 0;color:#6B7280;font-size:14px;width:130px;vertical-align:top;">${label}</td><td style="padding:6px 0;color:#1C1C1C;font-size:14px;font-weight:600;">${esc(Array.isArray(value) ? value.join(', ') : value)}</td></tr>`).join('')}
-              </table>
-              ${/\$/.test(String(budget || '')) ? '<p style="margin:12px 0 0;color:#6B7280;font-size:13px;line-height:1.5;">Budgets are a rough guide. We will confirm a real quote after a short call.</p>' : ''}
-            </div>` : ''
-      const autoReplyHtml = `
-        <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #FFE4D6;">
-          <div style="background:linear-gradient(135deg,#FF8C61,#E8571A);padding:40px;text-align:center;">
-            <h1 style="color:white;margin:0;font-size:28px;font-weight:800;">🍑 PeachWeb</h1>
-            <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:15px;">Web Development & AI Chatbots</p>
-          </div>
-          <div style="padding:40px;">
-            <h2 style="color:#1C1C1C;font-size:22px;margin:0 0 16px;">Hi ${esc(name)}, thanks for reaching out!</h2>
-            <p style="color:#374151;line-height:1.7;font-size:15px;margin:0 0 24px;">Thanks for contacting PeachWeb. We will get back to you within 1–2 business days.</p>
-            ${recapHtml}
-            <div style="background:#FFF5F0;border-radius:12px;padding:24px;margin-bottom:24px;">
-              <p style="margin:0 0 16px;font-weight:700;color:#1C1C1C;">Here's what happens next:</p>
-              <div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:12px;">
-                <span style="background:#FF8C61;color:white;border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">1</span>
-                <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;">Our team reviews your request and project details.</p>
-              </div>
-              <div style="display:flex;align-items:flex-start;margin-bottom:12px;gap:12px;">
-                <span style="background:#FF8C61;color:white;border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">2</span>
-                <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;">We schedule a discovery call to learn about your vision.</p>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;">
-                <span style="background:#FF8C61;color:white;border-radius:50%;min-width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">3</span>
-                <p style="margin:0;color:#374151;font-size:14px;line-height:1.5;">We build and launch your custom website or chatbot.</p>
-              </div>
-            </div>
-            <p style="color:#6B7280;font-size:14px;">Questions? Reply to this email or reach us at <a href="mailto:peachwebdevelopment@gmail.com" style="color:#FF8C61;">peachwebdevelopment@gmail.com</a></p>
-          </div>
-          <div style="background:#FFF5F0;padding:24px;text-align:center;border-top:1px solid #FFE4D6;">
-            <p style="margin:0;color:#9CA3AF;font-size:13px;">© ${new Date().getFullYear()} PeachWeb · Web Development & AI Chatbots for Local Businesses</p>
-          </div>
-        </div>
-      `
+      const autoReplyHtml = buildAutoReplyEmail(inquiry)
       sendEmail({
         to: email,
         subject: 'Thanks for contacting PeachWeb!',
