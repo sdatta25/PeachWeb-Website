@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ArrowRight, Download } from 'lucide-react'
 import { projects, useCases, USE_CASES_PDF } from '../content/site'
 
@@ -23,29 +24,48 @@ function Flow({ steps }) {
 }
 
 export default function UseCases() {
+  // 'all', or the id of the one business type being shown. A link like /use-cases#retail
+  // opens with that one picked.
+  const [pick, setPick] = useState('all')
+  useEffect(() => {
+    const id = window.location.hash.slice(1)
+    if (useCases.some(u => u.id === id)) setPick(id)
+  }, [])
+  const choose = id => {
+    setPick(id)
+    history.replaceState(null, '', id === 'all' ? window.location.pathname : `#${id}`)
+  }
+  const shown = pick === 'all' ? useCases : useCases.filter(u => u.id === pick)
+  const chip = on => `min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors active:scale-[0.97] ${on ? 'border-dark bg-dark text-peach' : 'border-dark/30 bg-white hover:border-dark'}`
+
   return (
     <section aria-label="Use cases" className="py-16 sm:py-24">
       <div className="page">
-        <nav aria-label="Use cases on this page" className="reveal mb-16 border-y border-line py-4">
-          <ul className="flex flex-wrap gap-x-6 gap-y-1">
+        <div className="sticky top-[var(--nav-h)] z-10 -mx-4 mb-16 border-b border-line bg-page px-4 py-3 sm:-mx-8 sm:px-8">
+          <p id="uc-pick" className="mb-2 text-sm text-muted">Pick your kind of business</p>
+          <div role="group" aria-labelledby="uc-pick" className="flex gap-2 overflow-x-auto pb-1">
+            <button type="button" aria-pressed={pick === 'all'} onClick={() => choose('all')} className={`shrink-0 ${chip(pick === 'all')}`}>All six</button>
             {useCases.map(u => (
-              <li key={u.id}><a href={`#${u.id}`} className="inline-flex min-h-11 items-center text-muted hover:text-dark">{u.name}</a></li>
+              <button key={u.id} type="button" aria-pressed={pick === u.id} onClick={() => choose(u.id)} className={`shrink-0 ${chip(pick === u.id)}`}>
+                {u.name}
+              </button>
             ))}
-          </ul>
-        </nav>
+          </div>
+        </div>
 
-        <div className="space-y-20 lg:space-y-28">
-          {useCases.map((u, i) => {
+        <div aria-live="polite" className="space-y-20 lg:space-y-28">
+          {shown.map(u => {
+            const i = useCases.indexOf(u)
             const example = u.example && projects.find(p => p.slug === u.example)
             return (
-              <article key={u.id} id={u.id} aria-labelledby={`${u.id}-h`} className="anchor grid-12 gap-y-8">
-                <div className="reveal col-span-4 sm:col-span-12 lg:col-span-4">
+              <article key={u.id} id={u.id} aria-labelledby={`${u.id}-h`} className="msg-in grid-12 gap-y-8">
+                <div className="col-span-4 sm:col-span-12 lg:col-span-4">
                   <p className="mb-2 text-sm tabular-nums text-muted">{String(i + 1).padStart(2, '0')}</p>
                   <h2 id={`${u.id}-h`} className="mb-3 text-h3">{u.name}</h2>
                   {u.who && <p className="text-sm text-muted">{u.who}</p>}
                 </div>
 
-                <div className="reveal col-span-4 space-y-8 sm:col-span-12 lg:col-span-8">
+                <div className="col-span-4 space-y-8 sm:col-span-12 lg:col-span-8">
                   <div>
                     <h3 className="mb-2 text-sm font-semibold tracking-normal text-burnt">The problem</h3>
                     <p className="max-w-prose text-lg">{u.problem}</p>

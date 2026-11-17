@@ -9,6 +9,8 @@
 //   the page land in the wrong place.
 // - Wheel, touch and keyboard scrolling are untouched, and any of them cancels a jump in progress.
 
+import { initNavigation } from './navigation'
+
 const DURATION = 450 // ms
 const ease = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2) // easeInOutCubic
 
@@ -19,6 +21,7 @@ function offsetTop(el) {
 }
 
 export function initSmoothScroll() {
+  initNavigation()
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
   let frame = 0
 

@@ -197,3 +197,16 @@ html[data-intro='lifting'] .intro-in { animation: introRise 700ms cubic-bezier(0
 .range-flow[data-unset]::-webkit-slider-thumb { border-style: dashed; background: rgb(var(--chip)); }
 .range-flow[data-unset]::-moz-range-thumb { border-style: dashed; background: rgb(var(--chip)); }
 .range-flow:focus-visible { outline: 2px solid rgb(var(--burnt)); outline-offset: 4px; }
+
+/* ---- Moving between pages ----
+   A short cross-fade instead of a white flash, in browsers that support it. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 160ms; }
+}
+
+/* Project screenshots lift slightly under the pointer. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  main article .frame { transition: transform 200ms ease-out, box-shadow 200ms ease-out; }
+  main article:hover .frame { transform: translateY(-4px); box-shadow: 0 1px 2px rgb(var(--dark) / 0.06), 0 24px 48px -24px rgb(var(--dark) / 0.28); }
+}
