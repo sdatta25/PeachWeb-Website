@@ -148,8 +148,8 @@ export const founders = [
     role: 'Co-founder',
     photo: '/founders/adwait.jpg',
     linkedin: 'https://www.linkedin.com/in/adwaitdhaneshwar/',
-    bio: 'Fell for web development building pages for school organizations, where a clear, well-made site changed how many people actually showed up. Co-founded PeachWeb to bring that same lift to local Atlanta businesses still getting by on an outdated page, or none at all.',
-    work: ['STEM Simplified', 'AHS Robotics', 'AHS Chess Club'],
+    bio: 'I’m Adwait Dhaneshwar, co-founder of PeachWeb. I’m a student in Alpharetta, and I build websites that help local businesses and organizations look credible and get found. I’ve built sites for STEM Simplified, AHS Robotics, and AHS Chess Club, and I run STEM Simplified, a free study resource library I started for students. When you work with PeachWeb, you work directly with me and Souren. We answer our own emails, and we won’t hand your project to someone else.',
+    work: ['PeachWeb', 'STEM Simplified', 'AHS Robotics', 'AHS Chess Club'],
   },
 ]
 
