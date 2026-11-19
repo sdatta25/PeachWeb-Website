@@ -315,7 +315,7 @@ export default function MockupFlow({ onDone, doneLabel = 'Close', focusOnMount =
               <h3 id={id('desc-h')} className="mb-1 text-h3">Tell us about your {copy?.noun ?? 'business'} <Required /></h3>
               <p id={id('desc-hint')} className="mb-3 text-sm text-muted">What do you do, and what should the site help with?</p>
               <textarea
-                ref={descRef} id={id('description')} name="description" rows={4} required
+                ref={descRef} maxLength={4000} id={id('description')} name="description" rows={4} required
                 aria-labelledby={id('desc-h')} aria-describedby={id('desc-hint')} aria-invalid={invalid === 'description'}
                 value={form.description} onChange={onChange} className="field resize-y"
                 placeholder={copy?.example ?? DEFAULT_EXAMPLE}
@@ -328,11 +328,11 @@ export default function MockupFlow({ onDone, doneLabel = 'Close', focusOnMount =
               <div className={`mt-5 gap-5 sm:grid-cols-2 ${showMore ? 'grid' : 'hidden sm:grid'}`}>
                 <div>
                   <label htmlFor={id('org')} className={label}>Business name <Optional /></label>
-                  <input ref={orgRef} id={id('org')} name="organization" autoComplete="organization" value={form.organization} onChange={onChange} className="field" />
+                  <input ref={orgRef} id={id('org')} name="organization" maxLength={160} autoComplete="organization" value={form.organization} onChange={onChange} className="field" />
                 </div>
                 <div>
                   <label htmlFor={id('site')} className={label}>Current website <Optional /></label>
-                  <input id={id('site')} name="website" type="url" inputMode="url" placeholder="yourbusiness.com" value={form.website} onChange={onChange} className="field" />
+                  <input id={id('site')} name="website" maxLength={200} type="url" inputMode="url" placeholder="yourbusiness.com" value={form.website} onChange={onChange} className="field" />
                 </div>
               </div>
 
@@ -437,18 +437,18 @@ export default function MockupFlow({ onDone, doneLabel = 'Close', focusOnMount =
               <div className="space-y-5">
                 <div>
                   <label htmlFor={id('name')} className={label}>Name <Required /></label>
-                  <input ref={nameRef} id={id('name')} name="name" autoComplete="name" required aria-invalid={invalid === 'name'} value={form.name} onChange={onChange} className="field" />
+                  <input ref={nameRef} id={id('name')} name="name" maxLength={120} autoComplete="name" required aria-invalid={invalid === 'name'} value={form.name} onChange={onChange} className="field" />
                 </div>
                 <div>
                   <label htmlFor={id('email')} className={label}>Email <Required /></label>
                   <div className="relative">
-                    <input ref={emailRef} id={id('email')} name="email" type="email" autoComplete="email" required aria-invalid={invalid === 'email'} value={form.email} onChange={onChange} className="field pr-11" />
+                    <input ref={emailRef} id={id('email')} name="email" maxLength={254} type="email" autoComplete="email" required aria-invalid={invalid === 'email'} value={form.email} onChange={onChange} className="field pr-11" />
                     {isEmail(form.email) && <Check aria-hidden="true" className="flow-pop pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-burnt" strokeWidth={2.5} />}
                   </div>
                 </div>
                 <div>
                   <label htmlFor={id('phone')} className={label}>Phone <Optional /></label>
-                  <input id={id('phone')} name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={onChange} className="field" />
+                  <input id={id('phone')} name="phone" maxLength={40} type="tel" autoComplete="tel" value={form.phone} onChange={onChange} className="field" />
                 </div>
               </div>
               <div aria-live="assertive" className="mt-5">

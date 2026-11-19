@@ -165,24 +165,24 @@ export default function QuoteEstimator() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="qe-name" className="mb-2 block text-sm font-semibold">Name <span className="text-burnt" aria-hidden="true">*</span></label>
-                  <input ref={firstField} id="qe-name" name="name" autoComplete="name" required aria-invalid={invalid === 'name'} value={form.name} onChange={onChange} className="field" />
+                  <input ref={firstField} id="qe-name" name="name" maxLength={120} autoComplete="name" required aria-invalid={invalid === 'name'} value={form.name} onChange={onChange} className="field" />
                 </div>
                 <div>
                   <label htmlFor="qe-email" className="mb-2 block text-sm font-semibold">Email <span className="text-burnt" aria-hidden="true">*</span></label>
-                  <input id="qe-email" name="email" type="email" autoComplete="email" required aria-invalid={invalid === 'email'} value={form.email} onChange={onChange} className="field" />
+                  <input id="qe-email" name="email" maxLength={254} type="email" autoComplete="email" required aria-invalid={invalid === 'email'} value={form.email} onChange={onChange} className="field" />
                 </div>
                 <div>
                   <label htmlFor="qe-phone" className="mb-2 block text-sm font-semibold">Phone <span className="font-normal text-muted">(optional)</span></label>
-                  <input id="qe-phone" name="phone" type="tel" autoComplete="tel" value={form.phone} onChange={onChange} className="field" />
+                  <input id="qe-phone" name="phone" maxLength={40} type="tel" autoComplete="tel" value={form.phone} onChange={onChange} className="field" />
                 </div>
                 <div>
                   <label htmlFor="qe-org" className="mb-2 block text-sm font-semibold">Business name <span className="font-normal text-muted">(optional)</span></label>
-                  <input id="qe-org" name="organization" autoComplete="organization" value={form.organization} onChange={onChange} className="field" />
+                  <input id="qe-org" name="organization" maxLength={160} autoComplete="organization" value={form.organization} onChange={onChange} className="field" />
                 </div>
               </div>
               <div>
                 <label htmlFor="qe-notes" className="mb-2 block text-sm font-semibold">Anything else? <span className="font-normal text-muted">(optional)</span></label>
-                <textarea id="qe-notes" name="notes" rows={3} value={form.notes} onChange={onChange} className="field resize-y" />
+                <textarea id="qe-notes" name="notes" maxLength={2000} rows={3} value={form.notes} onChange={onChange} className="field resize-y" />
               </div>
               <div aria-live="assertive">
                 {error && <p role="alert" className="rounded border border-burnt bg-chip/50 px-4 py-2 text-sm">{error}</p>}
