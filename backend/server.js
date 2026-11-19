@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import { timingSafeEqual } from 'crypto'
 import nodemailer from 'nodemailer'
 import { Resend } from 'resend'
 import { generateReply } from './chat.js'
@@ -21,8 +22,41 @@ const PORT = process.env.PORT || 3002
 // shares the proxy's IP and the chat rate limit below would throttle everyone at once.
 app.set('trust proxy', 1)
 
-app.use(cors())
-app.use(express.json())
+// Only PeachWeb's own pages may call this API from a browser. Requests with no Origin
+// header (uptime checks, curl) are unaffected: CORS is a browser rule.
+const ALLOWED_ORIGINS = new Set([
+  'https://www.peachwebatl.com',
+  'https://peachwebatl.com',
+  'https://peachwebatl.vercel.app',
+  'http://localhost:5174',
+  ...String(process.env.EXTRA_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean)
+])
+const PREVIEW_ORIGIN = /^https:\/\/peachweb[a-z0-9-]*\.vercel\.app$/ // this project's preview deploys
+app.use(cors({
+  origin: (origin, cb) => cb(null, !origin || ALLOWED_ORIGINS.has(origin) || PREVIEW_ORIGIN.test(origin)),
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  maxAge: 600
+}))
+
+// Basic hardening headers for the API's own responses.
+app.disable('x-powered-by')
+app.use((req, res, next) => {
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains'
+  })
+  next()
+})
+
+// 64 KB is far above any real form or chat history, and far below what an attacker would send.
+app.use(express.json({ limit: '64kb' }))
+app.use((err, req, res, next) => {
+  if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'That request is too large. Please shorten your message.' })
+  if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'That request could not be read.' })
+  next(err)
+})
 
 // --- JSON file storage (no native modules needed) ---
 // NOTE: on hosts with an ephemeral filesystem (Render's free tier included) this
@@ -244,12 +278,54 @@ if (relayEnabled) {
 // endpoints refuse to answer at all if it is unset.
 const ADMIN_KEY = process.env.ADMIN_KEY
 
+// Constant-time comparison, so response timing reveals nothing about the key.
+function sameSecret(given, expected) {
+  const a = Buffer.from(String(given || ''))
+  const b = Buffer.from(String(expected))
+  return a.length === b.length && timingSafeEqual(a, b)
+}
+
+// The contact forms: a few submissions per visitor per 15 minutes. Generous for a real
+// person, and it stops a script from spamming the inbox or burning the email quota.
+const INQUIRY_LIMIT = Number(process.env.INQUIRY_RATE_PER_15MIN || 5)
+const inquiryHits = new Map() // ip -> timestamps (ms) within the last 15 minutes
+
+function inquiryRateLimited(ip) {
+  const now = Date.now()
+  const windowMs = 15 * 60_000
+  const recent = (inquiryHits.get(ip) || []).filter(t => now - t < windowMs)
+  const limited = recent.length >= INQUIRY_LIMIT
+  if (!limited) recent.push(now)
+  inquiryHits.set(ip, recent)
+  if (inquiryHits.size > 5000) {
+    for (const [k, v] of inquiryHits) if (!v.length || now - v[v.length - 1] >= windowMs) inquiryHits.delete(k)
+  }
+  return limited
+}
+
+// Upper bounds for each field. Above anything the site's forms can send.
+const FIELD_LIMITS = { name: 120, email: 254, phone: 40, organization: 160, orgType: 80, budget: 40, description: 6000 }
+
+function invalidInquiry(body) {
+  for (const [field, max] of Object.entries(FIELD_LIMITS)) {
+    const v = body[field]
+    if (v != null && typeof v !== 'string') return `Please check the ${field} field.`
+    if (v && v.length > max) return `The ${field} field is too long (${max} characters at most).`
+  }
+  if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) return 'Please enter a valid email address.'
+  const s = body.services
+  if (s != null && !(Array.isArray(s) && s.length <= 5 && s.every(x => typeof x === 'string' && x.length <= 40))) {
+    return 'Please check the services you picked.'
+  }
+  return null
+}
+
 function requireAdmin(req, res, next) {
   if (!ADMIN_KEY) {
     console.error('ADMIN_KEY is not set; refusing admin request.')
     return res.status(503).json({ error: 'Admin API not configured.' })
   }
-  if (req.headers['x-admin-key'] !== ADMIN_KEY) {
+  if (!sameSecret(req.headers['x-admin-key'], ADMIN_KEY)) {
     return res.status(401).json({ error: 'Unauthorized' })
   }
   next()
@@ -257,6 +333,12 @@ function requireAdmin(req, res, next) {
 
 // POST /api/inquiries — submit contact form
 app.post('/api/inquiries', async (req, res) => {
+  // Validate first, so a visitor fixing a typo isn't counted against the limit.
+  const problem = invalidInquiry(req.body || {})
+  if (problem) return res.status(400).json({ error: problem })
+  if (inquiryRateLimited(req.ip)) {
+    return res.status(429).json({ error: "You've sent several requests in a short time. Please wait a few minutes, or email peachwebdevelopment@gmail.com." })
+  }
   try {
     const { name, email, phone, organization, orgType, description, budget, services } = req.body
 
